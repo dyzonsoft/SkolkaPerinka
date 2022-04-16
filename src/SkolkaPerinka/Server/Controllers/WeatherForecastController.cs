@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using SkolkaPerinka.Shared;
+using SkolkaPerinka.Shared.Models;
 
 namespace SkolkaPerinka.Server.Controllers
 {

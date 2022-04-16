@@ -1,4 +1,4 @@
-namespace SkolkaPerinka.Shared
+namespace SkolkaPerinka.Shared.Models
 {
     public class WeatherForecast
     {
