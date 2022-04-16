@@ -5,10 +5,14 @@
         <MudText Typo="Typo.h5" Class="ml-3">Peřinka</MudText>
         <MudSpacer />
             <MudText>@language["Pozdrav"]</MudText>
+            <NavLink class="nav-link" href="fetchdata">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+            </NavLink>
             <LanguageSwitcher />
             <ThemeSwitcher />
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
     </MudAppBar>
+    <MudSpacer />
     <MudMainContent>
             @Body
     </MudMainContent>

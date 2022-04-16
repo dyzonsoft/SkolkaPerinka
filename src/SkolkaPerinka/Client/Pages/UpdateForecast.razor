@@ -1,0 +1,69 @@
+﻿@page "/editforecast/{id:int}"
+@using SkolkaPerinka.Shared
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Update Forecast</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+    <MudText Typo="Typo.h4">Update Forecast</MudText>
+    <EditForm Model="@forecast" OnValidSubmit="Update">
+    <DataAnnotationsValidator/>
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="First name" HelperText="Max. 8 characters"
+                                  @bind-Value="forecast.Date" For="@(() => forecast.Date)"/>
+                    <MudTextField Label="Email" Class="mt-3"
+                                  @bind-Value="forecast.TemperatureC" For="@(() => forecast.TemperatureC)"/>
+                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                                  @bind-Value="forecast.Summary" For="@(() => forecast.Summary)" InputType="InputType.Password"/>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update forecast</MudButton>
+                    <MudNavLink Href="fetchdata">Back to fetch data</MudNavLink>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Success</MudText>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+    </EditForm>
+</MudContainer>
+
+@code {
+    private WeatherForecast forecast = new WeatherForecast();
+    [Parameter] public int Id { get; set; }
+    bool success;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var dd = forecast;
+        forecast = await Http.GetFromJsonAsync<WeatherForecast>($"/api/weatherforecast/{Id}");
+    }
+
+    private async Task Update()
+    {
+        var uu =  Http.PutAsJsonAsync<WeatherForecast>($"/api/weatherforecast/{forecast.Id}", forecast);
+        success = true;
+        NavigationManager.NavigateTo("/fetchdata");
+    }
+}

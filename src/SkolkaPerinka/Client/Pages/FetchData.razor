@@ -1,47 +1,61 @@
 ﻿@page "/fetchdata"
 @using SkolkaPerinka.Shared.Models
 @inject HttpClient Http
+@inject NavigationManager navigationManager
 
 <PageTitle>Weather forecast</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+    <MudText Typo="Typo.h4" Color="Color.Secondary">Weather forecast</MudText>
+    <MudTable Items="@forecasts" Hover="true" Breakpoint="Breakpoint.Sm" Loading="false" LoadingProgressColor="Color.Info">
+        <HeaderContent>
+            <MudTh>Date</MudTh>
+            <MudTh>Temperature</MudTh>
+            <MudTh>Summary</MudTh>
+            <MudTh>Action</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="date">@context.Date.ToShortDateString()</MudTd>
+            <MudTd DataLabel="temp">@context.TemperatureC</MudTd>
+            <MudTd DataLabel="summary" HideSmall="_hidePosition">@context.Summary</MudTd>
+            <MudTd DataLabel="summary" HideSmall="_hidePosition">
+                <MudButton @onclick="(() => DeleteForecast(context.Id))" Variant="Variant.Filled">Delete</MudButton>
+                <MudButton @onclick="(() => EditForecast(context.Id))" Variant="Variant.Filled">Edit</MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
 
-<h1>Weather forecast</h1>
+    <MudSwitch @bind-Checked="_hidePosition">Hide <b>position</b> when Breakpoint=Xs</MudSwitch>
 
-<p>This component demonstrates fetching data from the server.</p>
-
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+</MudContainer>
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudButton @onclick="CreateForecast" Variant="Variant.Filled">Create forecast</MudButton>
+</MudContainer>
 
 @code {
     private WeatherForecast[]? forecasts;
+    private bool _hidePosition;
+    private int id;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("/api/weatherforecast");
+    }
+
+    private async Task DeleteForecast(int id)
+    {
+        await Http.DeleteAsync($"/api/weatherforecast/{id}");
+
+        await InvokeAsync(() => StateHasChanged());
+
+    }
+
+    private void EditForecast(int id)
+    {
+        navigationManager.NavigateTo("/editforecast/" + id);
+    }
+
+    private void CreateForecast()
+    {
+        navigationManager.NavigateTo("/createforecast");
     }
 }

@@ -1,34 +1,63 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SkolkaPerinka.Server.Data;
 using SkolkaPerinka.Shared.Models;
 
 namespace SkolkaPerinka.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly AppDBContext _context;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, AppDBContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IActionResult> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            var forecast = await _context.Forecasts.ToListAsync();
+            return Ok(forecast);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var forecast = await _context.Forecasts.Where(f => f.Id == id).FirstOrDefaultAsync();
+            return Ok(forecast);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] WeatherForecast forecast)
+        {
+            _context.Forecasts.Add(forecast);
+            await _context.SaveChangesAsync();
+            return Ok(forecast);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update(int id, WeatherForecast updatedForecast)
+        {
+            _context.Forecasts.Update(updatedForecast);
+            await _context.SaveChangesAsync();
+            return Ok(updatedForecast);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var forecast = await _context.Forecasts.Where(f => f.Id == id).FirstOrDefaultAsync();
+            _context.Forecasts.Remove(forecast);
+            await _context.SaveChangesAsync();
+            return Ok(forecast);
         }
     }
 }

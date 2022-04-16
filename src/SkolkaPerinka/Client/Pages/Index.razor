@@ -1,15 +1,9 @@
 ﻿@page "/"
 @inject ILanguageContainerService language
 
-<PageTitle>Index</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+    <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+    <MudText>@language["Pozdrav"]</MudText>
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-
-<MudText>@language["Pozdrav"]</MudText>
-
-
+</MudContainer>
