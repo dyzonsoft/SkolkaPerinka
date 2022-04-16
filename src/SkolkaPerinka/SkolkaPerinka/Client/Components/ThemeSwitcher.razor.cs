@@ -6,8 +6,7 @@ namespace SkolkaPerinka.Client.Components
 {
     public partial class ThemeSwitcher
     {
-        [Inject]
-        ILocalStorageService localStorage { get; set; }
+        [Inject] ILocalStorageService localStorage { get; set; }
 
         private bool _isDarkMode;
         protected async override Task OnInitializedAsync()
