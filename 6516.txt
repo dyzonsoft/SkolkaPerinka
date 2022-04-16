@@ -1,0 +1,93 @@
+client:
+AKSoftware.Localization.MultiLanguages;
+Blazored.LocalStorage;
+MudBlazor;
+System.Net.Http.Json;
+System.IdentityModel.Tokens.Jwt;
+Microsoft.AspNetCore.Components.Authorization
+
+
+server:
+Microsoft.AspNetCore.Authentication.JwtBearer;
+Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+Microsoft.AspNetCore.Identity.UI;
+Microsoft.EntityFrameworkCore;
+Microsoft.EntityFrameworkCore.Design;
+Microsoft.EntityFrameworkCore.Sqlite;
+Microsoft.EntityFrameworkCore.Tool;
+
+create in server: folder Data and class: AppDBContext.cs:
+
+public class AppDBContext : IdentityDbContext
+    {
+        //public DbSet<Day> Days { get; set; }
+
+        public AppDBContext(DbContextOptions<AppDBContext> option) : base(option)
+        {
+        }
+    }
+=========================================================================================
+progar.cs:
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder =>
+        builder
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+});
+
+builder.Services.AddDbContext<AppDBContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDBContext>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+==========================================================================================
+appsetings:
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=./Data/AppDB.db"
+  },
+
+  "Jwt": {
+    "key": "niff02ce-0053-4tit-8877-31a7d18cx48d",
+    "Issuer": "perinka.jednoduse.cz"
+  }
+============================================================================================
+cd XXX adresar serveru
+dotnet ef migrations add XXX (initialMigration) -o "Data/Migrations"
+dotnet ef update database
+============================================================================================
+create in shared: folder Models: class User:
+
+public class User
+    {
+        [Required]
+        [EmailAddress]
+        public string EmailAddress { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        [StringLength(80, ErrorMessage ="Your password must be between {2} and {1} characters.", MinimumLength = 6)]
+        public string Password { get; set; }
+    }
+===========================================================================================
+create in server: UserController
+
+
