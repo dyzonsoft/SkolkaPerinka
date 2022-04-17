@@ -11,6 +11,5 @@ namespace SkolkaPerinka.Shared.Models
         public int TemperatureC { get; set; }
 
         public string? Summary { get; set; }
-
     }
 }

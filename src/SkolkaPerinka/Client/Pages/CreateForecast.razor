@@ -12,12 +12,13 @@
         <MudItem xs="12" sm="7">
             <MudCard>
                 <MudCardContent>
-                    <MudTextField Label="First name" HelperText="Max. 8 characters"
-                                  @bind-Value="forecast.Date" For="@(() => forecast.Date)"/>
-                    <MudTextField Label="Email" Class="mt-3"
-                                  @bind-Value="forecast.TemperatureC" For="@(() => forecast.TemperatureC)"/>
-                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
-                                  @bind-Value="forecast.Summary" For="@(() => forecast.Summary)" InputType="InputType.Password"/>
+                    <MudDatePicker Label="Date" Editable="true" @bind-Date="@date" Placeholder="Select Date" />
+                    @*<MudDatePicker Label="Date"
+                                  @bind-DateTime="forecast.Date"/>*@
+                    <MudNumericField Label="Temperature" Class="mt-3"
+                                  @bind-Value="forecast.TemperatureC" For="@(() => forecast.TemperatureC)" Variant="Variant.Text" Min="0" Max="10" />
+                    <MudTextField Label="Summary" HelperText="you can write summary." Class="mt-3"
+                                  @bind-Value="forecast.Summary" For="@(() => forecast.Summary)" />
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create forecast</MudButton>
@@ -52,6 +53,7 @@
 @code {
     private WeatherForecast forecast = new WeatherForecast();
     bool success;
+    DateTime? date = DateTime.Today;
 
     protected override void OnInitialized()
     {
@@ -60,6 +62,7 @@
 
     private async Task InsertForecast()
     {
+        forecast.Date = (DateTime)date;
         await Http.PostAsJsonAsync<WeatherForecast>("/api/weatherforecast", forecast);
         success = true;
         NavigationManager.NavigateTo("/fetchdata");

@@ -12,12 +12,13 @@
         <MudItem xs="12" sm="7">
             <MudCard>
                 <MudCardContent>
-                    <MudTextField Label="First name" HelperText="Max. 8 characters"
-                                  @bind-Value="forecast.Date" For="@(() => forecast.Date)"/>
-                    <MudTextField Label="Email" Class="mt-3"
-                                  @bind-Value="forecast.TemperatureC" For="@(() => forecast.TemperatureC)"/>
-                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
-                                  @bind-Value="forecast.Summary" For="@(() => forecast.Summary)" InputType="InputType.Password"/>
+                    <MudDatePicker Label="Date" Editable="true" @bind-Date="@date" Placeholder="Select Date" />
+                    @*<MudDatePicker Label="Date"
+                                  @bind-Date="((DateTime)forecast.Date)"/>*@
+                    <MudNumericField Label="Temperature" Class="mt-3"
+                                  @bind-Value="forecast.TemperatureC" For="@(() => forecast.TemperatureC)" Variant="Variant.Text" Min="0" Max="10" />
+                    <MudTextField Label="Summary" HelperText="you can write summary." Class="mt-3"
+                                  @bind-Value="forecast.Summary" For="@(() => forecast.Summary)" />
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update forecast</MudButton>
@@ -54,15 +55,18 @@
     [Parameter] public int Id { get; set; }
     bool success;
 
+    DateTime? date = DateTime.Today;
+
     protected override async Task OnInitializedAsync()
     {
-        var dd = forecast;
         forecast = await Http.GetFromJsonAsync<WeatherForecast>($"/api/weatherforecast/{Id}");
+        date = forecast.Date;
     }
 
     private async Task Update()
     {
-        var uu =  Http.PutAsJsonAsync<WeatherForecast>($"/api/weatherforecast/{forecast.Id}", forecast);
+        forecast.Date = (DateTime)date;
+        Http.PutAsJsonAsync<WeatherForecast>($"/api/weatherforecast/{forecast.Id}", forecast);
         success = true;
         NavigationManager.NavigateTo("/fetchdata");
     }
