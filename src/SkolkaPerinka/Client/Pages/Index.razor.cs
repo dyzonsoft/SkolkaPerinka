@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components;
 using SkolkaPerinka.Client.Providers;
 using System.Net.Http.Headers;
+using SkolkaPerinka.Shared.Models;
+using static System.Net.WebRequestMethods;
+using System.Net.Http.Json;
 
 namespace SkolkaPerinka.Client.Pages
 {
@@ -14,14 +17,15 @@ namespace SkolkaPerinka.Client.Pages
         [Inject] ILocalStorageService LocalStorageService { get; set; }
         protected override async Task OnInitializedAsync()
         {
-            language.InitLocalizedComponent(this);
-
             if (await LocalStorageService.ContainKeyAsync("bearerToken"))
             {
                 string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
                 await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
                 HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+                StateHasChanged();
             }
+
+            language.InitLocalizedComponent(this);
             StateHasChanged();
         }
     }

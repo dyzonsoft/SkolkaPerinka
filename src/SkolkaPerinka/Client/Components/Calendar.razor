@@ -1,0 +1,68 @@
+﻿@inject ILanguageContainerService language
+@inject NavigationManager navigationManager
+
+<MudPaper Class="rounded action-panel">
+    <MudText Color="Color.Default" @onclick="(() => CalendarBack())"><MudIcon Icon="@Icons.Filled.KeyboardDoubleArrowLeft" Class="calendar-arrow"></MudIcon></MudText>
+    <MudText Typo="Typo.h6" Color="Color.Primary" Class="calendar-date">@language[MonthString]  @YearString </MudText>
+    <MudText Color="Color.Default" @onclick="(() => CalendarNext())"><MudIcon Icon="@Icons.Filled.KeyboardDoubleArrowRight" Class="calendar-arrow"></MudIcon></MudText>
+</MudPaper>
+<div Class="mujgrid calendar-header">
+        <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
+            <MudText Typo="Typo.body2" Color="Color.Default">@language["pondeli"]</MudText>
+        </MudPaper>
+        <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
+            <MudText Typo="Typo.body2" Color="Color.Default">@language["utery"]</MudText>
+        </MudPaper>
+        <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
+            <MudText Typo="Typo.body2" Color="Color.Default">@language["streda"]</MudText>
+        </MudPaper>
+        <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
+            <MudText Typo="Typo.body2" Color="Color.Default">@language["ctvrtek"]</MudText>
+        </MudPaper>
+        <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
+            <MudText Typo="Typo.body2" Color="Color.Default">@language["patek"]</MudText>
+        </MudPaper>
+        <MudPaper Class="rounded text-center header-text weekend-day" Elevation="1">
+            <MudText Typo="Typo.body2" Color="Color.Default">@language["sobota"]</MudText>
+        </MudPaper>
+        <MudPaper Class="rounded text-center header-text weekend-day" Elevation="1">
+            <MudText Typo="Typo.body2" Color="Color.Default">@language["nedele"]</MudText>
+        </MudPaper>
+        
+</div>
+<div class="mujgrid weekend-panel">
+    @if (Days == null)
+    {
+        <MudText>Loading ...</MudText>
+    }
+    else
+    {
+        foreach (var day in Days)
+        {
+            string pocetDeti = "";
+            if (day.NumberOfChild > 0) pocetDeti = day.NumberOfChild.ToString();
+            if (day.Background == "current-month-background")
+            {
+                <MudPaper Class="text-center rounded datum current-month-background p-2" Elevation="5" @onclick="(() => DateClick(day.Date))">
+                    <MudText Class="date-number" Color="Color.Default">@day.Date.Day.</MudText>
+                    <MudText Class="date-childrens" Color="Color.Success">@pocetDeti</MudText>
+                </MudPaper>
+            } else if (day.Background == "today-background")
+            {
+                <MudPaper Class="text-center rounded datum today-background p-2" Elevation="5" @onclick="(() => DateClick(day.Date))">
+                    <MudText Class="date-number fw-bold" Color="Color.Info">@day.Date.Day.</MudText>
+                    <MudText Class="date-childrens" Color="Color.Success">@pocetDeti</MudText>
+                </MudPaper>
+            } else
+            {
+                <MudPaper Class="text-center rounded datum p-2" Elevation="5" @onclick="(() => DateClick(day.Date))">
+                    <MudText Class="date-number" Color="Color.Default">@day.Date.Day.</MudText>
+                    <MudText Class="date-childrens" Color="Color.Default">@pocetDeti</MudText>
+                </MudPaper>
+            }
+        }
+    }
+</div>
+
+
+

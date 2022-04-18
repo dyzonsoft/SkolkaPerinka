@@ -8,7 +8,7 @@ namespace SkolkaPerinka.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles="Director")]
+    //[Authorize(Roles = "Director")]
     public class WeatherForecastController : ControllerBase
     {
         //private readonly ILogger<WeatherForecastController> _logger;

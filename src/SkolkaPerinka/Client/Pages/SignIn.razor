@@ -1,10 +1,11 @@
 ﻿@using Blazored.LocalStorage
 @using SkolkaPerinka.Client.Providers
+@inject NavigationManager navigationManager
 @page "/signIn"
 
 <PageTitle>Sign in</PageTitle>
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-    @if (_signInSuccessful == false)
+@*    @if (_signInSuccessful == false)*@
 {
     <MudText Typo="Typo.h4">Sign in</MudText>
     <EditForm Model="_userToSignIn" OnValidSubmit="signInUser">
@@ -56,27 +57,27 @@
     UserName = director@example.com
     Password = Password1!
         </EditForm>
-    }
+@*    }
     else
     {
         <MudText Color="@Color.Success">
             <h4>sign in successful! Press the button bellow to go to the fetch data page.</h4>
             <a href="/fetchdata">Fetch data</a>
         </MudText>
-    }
+    }*@
 </MudContainer>
 
 @code {
     [Inject] HttpClient HttpClient { get; set; }
     [Inject] ILocalStorageService LocalStorageService { get; set; }
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-    private User _userToSignIn = new();
+    private User _userToSignIn = new() { EmailAddress = "parent@example.com", Password = "Password1!" };
     private bool _signInSuccessful = false;
     private bool _atemptTosignInFailed = false;
 
     private async Task signInUser()
     {
-        _atemptTosignInFailed = false;
+        //_atemptTosignInFailed = false;
 
         HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync("/api/user/signin", _userToSignIn);
 
@@ -89,12 +90,13 @@
             await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
 
             HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", jsonWebToken);
+            navigationManager.NavigateTo("/");
 
-            _signInSuccessful = true;
+            //_signInSuccessful = true;
         }
-        else
-        {
-            _atemptTosignInFailed = true;
-        }
+        //else
+        //{
+        //    _atemptTosignInFailed = true;
+        //}
     }
 }

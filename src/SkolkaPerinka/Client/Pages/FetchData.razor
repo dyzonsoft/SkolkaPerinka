@@ -3,39 +3,52 @@
 @inject HttpClient Http
 @inject NavigationManager navigationManager
 
-<PageTitle>Weather forecast</PageTitle>
-<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-    @if (forecasts == null)
-    {
+
+@if (!@_isAuthenticated)
+{
+    <PageTitle>Weather forecast</PageTitle>
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
         <MudText>@authenticationMessage</MudText>
-        <MudNavLink Variant="Variant.Filled" Href="/">Back</MudNavLink>
+        <MudButton Variant="Variant.Outlined" Href="/" StartIcon="@Icons.Filled.KeyboardBackspace" Color="Color.Info"> Back</MudButton>
+    </MudContainer>
+
+} else
+{   if (forecasts == null)
+    {
+        <PageTitle>Weather forecast</PageTitle>
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+            <MudText>Loading ...</MudText>
+        </MudContainer>
     } else
     {
-        <MudText Typo="Typo.h4" Color="Color.Secondary">Weather forecast</MudText>
-        <MudTable Items="@forecasts" Hover="true" Breakpoint="Breakpoint.Sm" Loading="false" LoadingProgressColor="Color.Info">
-            <HeaderContent>
-                <MudTh>Date</MudTh>
-                <MudTh>Temperature</MudTh>
-                <MudTh>Summary</MudTh>
-                <MudTh>Action</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="date">@context.Date.ToShortDateString()</MudTd>
-                <MudTd DataLabel="temp">@context.TemperatureC</MudTd>
-                <MudTd DataLabel="summary" HideSmall="_hidePosition">@context.Summary</MudTd>
-                <MudTd DataLabel="summary" HideSmall="_hidePosition">
-                    <MudButton @onclick="(() => DeleteForecast(context.Id))" Variant="Variant.Filled">Delete</MudButton>
-                    <MudButton @onclick="(() => EditForecast(context.Id))" Variant="Variant.Filled">Edit</MudButton>
-                </MudTd>
-            </RowTemplate>
-        </MudTable>
+        <PageTitle>Weather forecast</PageTitle>
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+            <MudText Typo="Typo.h4" Color="Color.Secondary">Weather forecast</MudText>
+            <MudTable Items="@forecasts" Hover="true" Breakpoint="Breakpoint.Sm" Loading="false" LoadingProgressColor="Color.Info">
+                <HeaderContent>
+                    <MudTh>Date</MudTh>
+                    <MudTh>Temperature</MudTh>
+                    <MudTh>Summary</MudTh>
+                    <MudTh>Action</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="date">@context.Date.ToShortDateString()</MudTd>
+                    <MudTd DataLabel="temp">@context.TemperatureC</MudTd>
+                    <MudTd DataLabel="summary" HideSmall="_hidePosition">@context.Summary</MudTd>
+                    <MudTd DataLabel="summary" HideSmall="_hidePosition">
+                        <MudButton @onclick="(() => DeleteForecast(context.Id))" Variant="Variant.Filled">Delete</MudButton>
+                        <MudButton @onclick="(() => EditForecast(context.Id))" Variant="Variant.Filled">Edit</MudButton>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
 
-        <MudSwitch @bind-Checked="_hidePosition">Hide <b>position</b> when Breakpoint=Xs</MudSwitch>
-        <MudContainer MaxWidth="MaxWidth.Medium">
-            <MudButton @onclick="CreateForecast" Variant="Variant.Filled">Create forecast</MudButton>
+            <MudSwitch @bind-Checked="_hidePosition">Hide <b>position</b> when Breakpoint=Xs</MudSwitch>
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudButton @onclick="CreateForecast" Variant="Variant.Filled">Create forecast</MudButton>
+            </MudContainer>
         </MudContainer>
     }
-</MudContainer>
+}
 
 
 @code {
@@ -43,15 +56,23 @@
     private bool _hidePosition;
     [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
     private string authenticationMessage = "Nemáte přístup k těmto datům.";
+    private bool _isAuthenticated;
 
     protected override async Task OnInitializedAsync()
     {
         var user = (await AuthenticationState).User;
-        if (user.Identity.IsAuthenticated == true && user.IsInRole("Director"))
+        if (user.Identity.IsAuthenticated == true)
         {
-            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("/api/weatherforecast");
+            if (user.IsInRole("Director"))
+            {
+                forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("/api/weatherforecast");
+                _isAuthenticated = true;
+            } 
+            else if (user.IsInRole("Teacher"))
+            {
+                authenticationMessage += " Prosím požádejte ředitele/ředitelku školky.";
+            }
         }
-        var dd = authenticationMessage;
     }
 
     private async Task DeleteForecast(int id)

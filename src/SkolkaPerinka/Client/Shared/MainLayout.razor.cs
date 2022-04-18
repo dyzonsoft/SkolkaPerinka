@@ -14,9 +14,17 @@ namespace SkolkaPerinka.Client.Shared
         [Inject] AuthenticationStateProvider authenticationStateProvider { get; set; }
         [Inject] NavigationManager navigationManager { get; set; }
         [Inject] HttpClient httpClient { get; set; }
+        [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
+        private string userName { get; set; }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
+            var user = (await AuthenticationState).User;
+            if (user.Identity.IsAuthenticated == true)
+            {
+                userName = user.Identity.Name;
+            }
+
             language.InitLocalizedComponent(this);
         }
 
@@ -29,9 +37,9 @@ namespace SkolkaPerinka.Client.Shared
             }
 
             //var jenda = await HttpClient.GetAsync(APIEndpoints.s_getalldays);
-
+            userName = "";
             StateHasChanged();
-            navigationManager.NavigateTo("/");
+            navigationManager.NavigateTo("signin");
         }
     }
 }
