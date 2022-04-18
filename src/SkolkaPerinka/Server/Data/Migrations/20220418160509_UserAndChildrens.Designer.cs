@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkolkaPerinka.Server.Data;
 
@@ -10,9 +11,10 @@ using SkolkaPerinka.Server.Data;
 namespace SkolkaPerinka.Server.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220418160509_UserAndChildrens")]
+    partial class UserAndChildrens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
@@ -167,39 +169,7 @@ namespace SkolkaPerinka.Server.Data.Migrations
 
                     b.HasKey("DayId");
 
-                    b.ToTable("Days", (string)null);
-                });
-
-            modelBuilder.Entity("SkolkaPerinka.Shared.Models.Children", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Old")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Childrens", (string)null);
+                    b.ToTable("Days");
                 });
 
             modelBuilder.Entity("SkolkaPerinka.Shared.Models.User", b =>
@@ -302,7 +272,7 @@ namespace SkolkaPerinka.Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Forecasts", (string)null);
+                    b.ToTable("Forecasts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

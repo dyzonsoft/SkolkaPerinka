@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SkolkaPerinka.Server.Data;
@@ -11,12 +10,10 @@ namespace SkolkaPerinka.Server.Controllers
     //[Authorize(Roles = "Director")]
     public class WeatherForecastController : ControllerBase
     {
-        //private readonly ILogger<WeatherForecastController> _logger;
         private readonly AppDBContext _context;
 
-        public WeatherForecastController(/*ILogger<WeatherForecastController> logger, */AppDBContext context)
+        public WeatherForecastController(AppDBContext context)
         {
-            //_logger = logger;
             _context = context;
         }
 

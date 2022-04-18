@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkolkaPerinka.Server.Data;
 
@@ -10,9 +11,10 @@ using SkolkaPerinka.Server.Data;
 namespace SkolkaPerinka.Server.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220418160754_Children")]
+    partial class Children
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
@@ -167,7 +169,7 @@ namespace SkolkaPerinka.Server.Data.Migrations
 
                     b.HasKey("DayId");
 
-                    b.ToTable("Days", (string)null);
+                    b.ToTable("Days");
                 });
 
             modelBuilder.Entity("SkolkaPerinka.Shared.Models.Children", b =>
@@ -199,7 +201,7 @@ namespace SkolkaPerinka.Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Childrens", (string)null);
+                    b.ToTable("Childrens");
                 });
 
             modelBuilder.Entity("SkolkaPerinka.Shared.Models.User", b =>
@@ -302,7 +304,7 @@ namespace SkolkaPerinka.Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Forecasts", (string)null);
+                    b.ToTable("Forecasts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

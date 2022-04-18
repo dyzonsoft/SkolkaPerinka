@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MudBlazor.Extensions;
 using SkolkaPerinka.Server.Data;
 using SkolkaPerinka.Shared.Models;
 
@@ -20,12 +19,8 @@ namespace SkolkaPerinka.Server.Controllers
         [HttpGet("getalldays/{month}/{year}")]
         public async Task<IActionResult> GetAllDays(int month, int year)
         {
-            //var now = DateTime.Now;
             int numberOfAllDays = 42;
-            
-            
             var fullSelectedMonth = await CreateMonth(month, year, numberOfAllDays);
-            
 
             return Ok(fullSelectedMonth);
         }
@@ -34,8 +29,6 @@ namespace SkolkaPerinka.Server.Controllers
         {
             int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
             DateTime SelectedMonth = new DateTime(selectedYear, selectedMonth, 1);
-            //DayOfWeek startOfWeek = new DayOfWeek.mo;
-
             
             DateTime pondeli = SelectedMonth.StartOfWeek(DayOfWeek.Monday);
             int previewMonthDaysNumber = (int)(SelectedMonth - pondeli).TotalDays;

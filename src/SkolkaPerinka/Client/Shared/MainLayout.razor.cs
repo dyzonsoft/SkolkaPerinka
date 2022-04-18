@@ -13,7 +13,6 @@ namespace SkolkaPerinka.Client.Shared
         [Inject] ILocalStorageService localStorage { get; set; }
         [Inject] AuthenticationStateProvider authenticationStateProvider { get; set; }
         [Inject] NavigationManager navigationManager { get; set; }
-        [Inject] HttpClient httpClient { get; set; }
         [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
         private string userName { get; set; }
 
@@ -36,7 +35,6 @@ namespace SkolkaPerinka.Client.Shared
                 ((AppAuthenticationStateProvider)authenticationStateProvider).SignOut();
             }
 
-            //var jenda = await HttpClient.GetAsync(APIEndpoints.s_getalldays);
             userName = "";
             StateHasChanged();
             navigationManager.NavigateTo("signin");

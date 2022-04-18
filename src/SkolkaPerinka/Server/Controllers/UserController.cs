@@ -13,13 +13,13 @@ namespace SkolkaPerinka.Server.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
 
         // tvoje doména.com/api/user
 
-        public UserController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public UserController(SignInManager<User> signInManager, UserManager<User> userManager, IConfiguration configuration)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -27,22 +27,22 @@ namespace SkolkaPerinka.Server.Controllers
         }
 
         // tvoje doména.com/api/user/register
-        [Route("register")]
+        //[Route("register")]
         [AllowAnonymous]
-        [HttpPost]
-        public async Task<IActionResult> Register([FromBody] User user)
+        [HttpPost("register/{role}")]
+        public async Task<IActionResult> Register([FromBody] User user, string role)
         {
-            string username = user.EmailAddress;
-            string password = user.Password;
+            string username = user.Email;
+            string password = user.PasswordHash;
 
-            IdentityUser identityUser = new IdentityUser
+            User identityUser = new User
             {
                 Email = username,
                 UserName = username
             };
 
             IdentityResult userIdentityResult = await _userManager.CreateAsync(identityUser, password);
-            IdentityResult roleIdentityResult = await _userManager.AddToRoleAsync(identityUser, "Parent");
+            IdentityResult roleIdentityResult = await _userManager.AddToRoleAsync(identityUser, role);
 
             if (userIdentityResult.Succeeded == true && roleIdentityResult.Succeeded == true)
             {
@@ -68,8 +68,8 @@ namespace SkolkaPerinka.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> SignIn([FromBody] User user)
         {
-            string username = user.EmailAddress;
-            string password = user.Password;
+            string username = user.Email;
+            string password = user.PasswordHash;
 
             Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(username, password, false, false);
             if (signInResult.Succeeded == true)
@@ -100,7 +100,7 @@ namespace SkolkaPerinka.Server.Controllers
                 new Claim(ClaimTypes.NameIdentifier, identityUser.Id)
             };
 
-            IList<string> roleNames = await _userManager.GetRolesAsync(identityUser);
+            IList<string> roleNames = await _userManager.GetRolesAsync((User)identityUser);
             claims.AddRange(roleNames.Select(roleName => new Claim(ClaimsIdentity.DefaultRoleClaimType, roleName)));
 
             JwtSecurityToken jwtSecurityToken = new JwtSecurityToken

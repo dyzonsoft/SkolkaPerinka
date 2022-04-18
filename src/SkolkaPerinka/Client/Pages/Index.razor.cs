@@ -4,9 +4,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components;
 using SkolkaPerinka.Client.Providers;
 using System.Net.Http.Headers;
-using SkolkaPerinka.Shared.Models;
-using static System.Net.WebRequestMethods;
-using System.Net.Http.Json;
 
 namespace SkolkaPerinka.Client.Pages
 {

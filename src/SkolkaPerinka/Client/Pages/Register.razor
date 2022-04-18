@@ -11,17 +11,26 @@
         <MudItem xs="12" sm="7">
             <MudCard>
                 <MudCardContent>
-                    @*<MudTextField Label="First name" HelperText="Max. 8 characters"
-                                  @bind-Value="_userToRegister.Username" For="@(() => model.Username)"/>*@
+                    <MudTextField Label="First name" Class="mt-3"
+                                  @bind-Value="_userToRegister.FirstName" For="@(() => _userToRegister.FirstName)"/>
+                    <MudTextField Label="Last name" Class="mt-3"
+                                  @bind-Value="_userToRegister.LastName" For="@(() => _userToRegister.LastName)"/>
+                    <MudTextField Label="Address" Class="mt-3"
+                                  @bind-Value="_userToRegister.Address" For="@(() => _userToRegister.Address)"/>
                     <MudTextField Label="Email" Class="mt-3"
-                                  @bind-Value="_userToRegister.EmailAddress" For="@(() => _userToRegister.EmailAddress)"/>
+                                  @bind-Value="_userToRegister.Email" For="@(() => _userToRegister.Email)"/>
                     <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
-                                  @bind-Value="_userToRegister.Password" For="@(() => _userToRegister.Password)" InputType="InputType.Password"/>
-                    @*<MudTextField Label="Password" HelperText="Repeat the password" Class="mt-3"
-                                  @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password"/>*@
+                                  @bind-Value="_userToRegister.PasswordHash" For="@(() => _userToRegister.PasswordHash)" InputType="InputType.Password"/>
+                    <MudTextField Label="Phone" Class="mt-3"
+                                  @bind-Value="_userToRegister.Phone" For="@(() => _userToRegister.Phone)"/>
+                    <MudSpacer/>
+                    <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Class="ml-n2" Label="I agree!" @bind-Checked="_IAgree" Size="Size.Large"/>
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Parent")" Class="ml-auto" Disabled="@(!_IAgree)">Register Parent</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Teacher")" Class="ml-auto" Disabled="@(!_IAgree)">register Teacher</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Director")" Class="ml-auto" Disabled="@(!_IAgree)">register Director</MudButton>
+                    
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -63,16 +72,18 @@
 
 @code {
     [Inject] HttpClient HttpClient { get; set; }
-    private User _userToRegister = new() { EmailAddress = "user@example.com", Password = "Password1!" };
+    private User _userToRegister = new() { Email = "user@example.com", PasswordHash = "Password1!" };
     private bool _registerSuccessful = false;
     private bool _atemptToRegisterFailed = false;
     private string? _atemptToRegisterFailedErrorMessage = null;
+    public bool _IAgree { get; set; } = false;
+    public string _role { get; set; }
 
     private async Task RegisterUser()
     {
         _atemptToRegisterFailed = false;
 
-        HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync("/api/user/register", _userToRegister);
+        HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync($"/api/user/register/{_role}", _userToRegister);
 
         if (httpResponseMessage.IsSuccessStatusCode)
         {

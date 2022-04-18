@@ -3,7 +3,6 @@
 @inject HttpClient Http
 @inject NavigationManager navigationManager
 
-
 @if (!@_isAuthenticated)
 {
     <PageTitle>Weather forecast</PageTitle>
@@ -49,7 +48,6 @@
         </MudContainer>
     }
 }
-
 
 @code {
     private WeatherForecast[]? forecasts = null;

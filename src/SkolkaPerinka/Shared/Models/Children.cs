@@ -1,10 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SkolkaPerinka.Shared.Models
 {
-    public class User : IdentityUser
+    public class Children
     {
+        [Key]
+        public int Id { get; set; }
         [Required]
         [StringLength(30, ErrorMessage = "Prosím zkraťte své vlastní jméno na {1} znaků. minimum jsou {2} znaky.", MinimumLength = 6)]
         public string FirstName { get; set; }
@@ -14,10 +20,8 @@ namespace SkolkaPerinka.Shared.Models
         [Required]
         [StringLength(60, ErrorMessage = "Prosím zkraťte svoji adresu na {1} znaků. minimum jsou {2} znaky.", MinimumLength = 6)]
         public string Address { get; set; }
-
-        [Required(ErrorMessage = "telefonní číslo na Vás potřebujeme.")]
-        [DataType(DataType.PhoneNumber, ErrorMessage = "špatné telefonní číslo.")]
-        //[RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "neplatné telefonní číslo.")]
-        public string Phone { get; set; }
+        [Required]
+        public int Old { get; set; }
+        public int ParentId { get; set; }
     }
 }
