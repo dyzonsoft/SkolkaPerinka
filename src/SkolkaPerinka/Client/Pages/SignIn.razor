@@ -1,56 +1,45 @@
-﻿@using Blazored.LocalStorage
+﻿@page "/signin"
+@using Blazored.LocalStorage
 @using SkolkaPerinka.Client.Providers
 @inject NavigationManager navigationManager
-@page "/signIn"
 
 <PageTitle>Sign in</PageTitle>
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
     <MudText Typo="Typo.h4">Sign in</MudText>
     <EditForm Model="_userToSignIn" OnValidSubmit="signInUser">
-    <DataAnnotationsValidator/>
-    <MudGrid>
-        <MudItem xs="12" sm="7">
-            <MudCard>
-                <MudCardContent>
-                    <MudTextField Label="Email" Class="mt-3"
-                                  @bind-Value="_userToSignIn.Email" For="@(() => _userToSignIn.Email)"/>
-                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
-                                  @bind-Value="_userToSignIn.PasswordHash" For="@(() => _userToSignIn.PasswordHash)" InputType="InputType.Password"/>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">signIn</MudButton>
-                    <MudNavLink Href="register">register</MudNavLink>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-        <MudItem xs="12" sm="5">
-            <MudPaper Class="pa-4 mud-height-full">
-                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
-                @if (_atemptTosignInFailed == true)
-                {
-                    <MudText Color="@Color.Error">
-                        <ValidationSummary />
-                    </MudText>
-                    <MudText Color="@Color.Info">
-                        Sign in failed. Please check yiur username anr/or password and try again.
-                        _________
-                    </MudText>
-                }
-                else
-                {
-                    <MudText Color="Color.Success">Success</MudText>
-                }
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12">
-            <MudText Typo="Typo.body2" Align="Align.Center">
-                Fill out the form correctly to see the success message.
-            </MudText>
-        </MudItem>
-    </MudGrid>
-    Director:
-    UserName = director@example.com
-    Password = Password1!
+            <DataAnnotationsValidator/>
+            <MudGrid>
+                <MudItem xs="12" sm="7">
+                    <MudCard>
+                        <MudCardContent>
+                            <MudTextField Label="Email" Class="mt-3"
+                                          @bind-Value="_userToSignIn.Email" For="@(() => _userToSignIn.Email)"/>
+                            <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                                          @bind-Value="_userToSignIn.Password" For="@(() => _userToSignIn.Password)" InputType="InputType.Password"/>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">signIn</MudButton>
+                            or
+                            <MudNavLink Href="register">register</MudNavLink>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="5">
+                    <MudPaper Class="pa-4 mud-height-full">
+                        <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                        @if (success)
+                        {
+                            <MudText Color="Color.Success">Success</MudText>
+                        }
+                        else
+                        {
+                            <MudText Color="@Color.Error">
+                                <ValidationSummary />
+                            </MudText>
+                        }
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
         </EditForm>
 </MudContainer>
 
@@ -58,9 +47,9 @@
     [Inject] HttpClient HttpClient { get; set; }
     [Inject] ILocalStorageService LocalStorageService { get; set; }
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-    private User _userToSignIn = new() { Email = "parent@example.com", PasswordHash = "Password1!" };
+    private UserToSigniIn _userToSignIn = new() { Email = "parent@example.com", Password = "Password1!" };
     private bool _signInSuccessful = false;
-    private bool _atemptTosignInFailed = false;
+    private bool success = false;
 
     private async Task signInUser()
     {
@@ -74,8 +63,10 @@
 
             await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
 
+            success = true;
+
             HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", jsonWebToken);
-            navigationManager.NavigateTo("/");
+            navigationManager.NavigateTo("appsite");
         }
     }
 }

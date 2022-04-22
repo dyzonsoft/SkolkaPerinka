@@ -1,17 +1,19 @@
-﻿@inherits LayoutComponentBase
+﻿@*@using Microsoft.AspNetCore.Authorization*@
+@inherits LayoutComponentBase
+@*@attribute [Authorize]*@
 
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudText Typo="Typo.h5" Class="ml-3">Peřinka</MudText>
         <MudSpacer />
-        <MudText>@userName</MudText>
-        <LanguageSwitcher />
-        <ThemeSwitcher />
         <AuthorizeView>
             <Authorized>
+                @context.User.Identity.Name!
                 <MudButton OnClick="SignOut">Sign out</MudButton>
             </Authorized>
         </AuthorizeView>
+        <LanguageSwitcher />
+        <ThemeSwitcher />
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
     </MudAppBar>
     <MudSpacer />

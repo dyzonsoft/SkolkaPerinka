@@ -2,7 +2,7 @@ using AKSoftware.Localization.MultiLanguages;
 using AKSoftware.Localization.MultiLanguages.Blazor;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
+//using Microsoft.AspNetCore.Components.Authorization;
 using SkolkaPerinka.Client.Providers;
 
 namespace SkolkaPerinka.Client.Shared
@@ -14,16 +14,9 @@ namespace SkolkaPerinka.Client.Shared
         [Inject] AuthenticationStateProvider authenticationStateProvider { get; set; }
         [Inject] NavigationManager navigationManager { get; set; }
         [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
-        private string userName { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            var user = (await AuthenticationState).User;
-            if (user.Identity.IsAuthenticated == true)
-            {
-                userName = user.Identity.Name;
-            }
-
             language.InitLocalizedComponent(this);
         }
 
@@ -35,9 +28,27 @@ namespace SkolkaPerinka.Client.Shared
                 ((AppAuthenticationStateProvider)authenticationStateProvider).SignOut();
             }
 
-            userName = "";
             StateHasChanged();
-            navigationManager.NavigateTo("signin");
+            navigationManager.NavigateTo("/");
         }
+
+
+        //[CascadingParameter]
+        //public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+        //protected override async Task OnInitializedAsync()
+        //{
+        //    var authState = AuthenticationStateTask;
+        //    var user = authState.User;
+        //    if (user.Identity.IsAuthenticated == true)
+        //    {
+        //        userName = user.Identity.Name;
+        //    }
+
+        //    language.InitLocalizedComponent(this);
+        //}
+
+
+
     }
 }

@@ -30,15 +30,21 @@ namespace SkolkaPerinka.Server.Controllers
         //[Route("register")]
         [AllowAnonymous]
         [HttpPost("register/{role}")]
-        public async Task<IActionResult> Register([FromBody] User user, string role)
+        public async Task<IActionResult> Register([FromBody] UserToRegister user, string role)
         {
             string username = user.Email;
-            string password = user.PasswordHash;
+            string password = user.Password;
 
             User identityUser = new User
             {
                 Email = username,
-                UserName = username
+                UserName = username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Email,
+                Phone = user.Phone,
+                PasswordHash = password,
+
             };
 
             IdentityResult userIdentityResult = await _userManager.CreateAsync(identityUser, password);
@@ -50,15 +56,14 @@ namespace SkolkaPerinka.Server.Controllers
             }
             else
             {
-                string errorsToReturn = "Register failed with the following errors";
+                List<string> errorsToReturn = new();
 
                 foreach (var error in userIdentityResult.Errors)
                 {
-                    errorsToReturn += Environment.NewLine;
-                    errorsToReturn += $"Error code: {error.Code} - {error.Description}";
+                    errorsToReturn.Add(error.Description);
                 }
 
-                return StatusCode(StatusCodes.Status500InternalServerError, errorsToReturn);
+                return BadRequest(errorsToReturn);
             }
         }
 
@@ -66,15 +71,15 @@ namespace SkolkaPerinka.Server.Controllers
         [Route("signin")]
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> SignIn([FromBody] User user)
+        public async Task<IActionResult> SignIn([FromBody] UserToSigniIn user)
         {
             string username = user.Email;
-            string password = user.PasswordHash;
+            string password = user.Password;
 
             Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(username, password, false, false);
             if (signInResult.Succeeded == true)
             {
-                IdentityUser identityUser = await _userManager.FindByNameAsync(username);
+                User identityUser = await _userManager.FindByNameAsync(username);
                 string JSONWebTokenAsString = await GenerateJSONWebToken(identityUser);
                 return Ok(JSONWebTokenAsString);
             }
@@ -86,7 +91,7 @@ namespace SkolkaPerinka.Server.Controllers
 
         [NonAction]
         [ApiExplorerSettings(IgnoreApi = true)]
-        private async Task<string> GenerateJSONWebToken(IdentityUser identityUser)
+        private async Task<string> GenerateJSONWebToken(User identityUser)
         {
             SymmetricSecurityKey symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
 
@@ -100,7 +105,7 @@ namespace SkolkaPerinka.Server.Controllers
                 new Claim(ClaimTypes.NameIdentifier, identityUser.Id)
             };
 
-            IList<string> roleNames = await _userManager.GetRolesAsync((User)identityUser);
+            IList<string> roleNames = await _userManager.GetRolesAsync(identityUser);
             claims.AddRange(roleNames.Select(roleName => new Claim(ClaimsIdentity.DefaultRoleClaimType, roleName)));
 
             JwtSecurityToken jwtSecurityToken = new JwtSecurityToken

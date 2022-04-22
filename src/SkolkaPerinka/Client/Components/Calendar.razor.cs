@@ -15,19 +15,24 @@ namespace SkolkaPerinka.Client.Components
         private string? YearString { get; set; }
         private DateTime CurrentMonthonth { get; set; }
         [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
+        bool _isAuthenticated;
 
         protected override async Task OnInitializedAsync()
         {
             CurrentMonthonth = DateTime.Today;
             var user = (await AuthenticationState).User;
-            if (!user.Identity.IsAuthenticated) navigationManager.NavigateTo("signin");
+            if (!user.Identity.IsAuthenticated) 
+            {
+                navigationManager.NavigateTo("signin");
+            } else
+            {
+                MonthString = GetMonthString(CurrentMonthonth.Month);
+                YearString = CurrentMonthonth.Year.ToString();
+                Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}");
 
-            MonthString = GetMonthString(CurrentMonthonth.Month);
-            YearString = CurrentMonthonth.Year.ToString();
-            Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}");
-
-            language.InitLocalizedComponent(this);
-            StateHasChanged();
+                language.InitLocalizedComponent(this);
+                StateHasChanged();
+            }
         }
 
         private string GetMonthString (int monthNumber)

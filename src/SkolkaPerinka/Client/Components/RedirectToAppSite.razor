@@ -1,0 +1,5 @@
+﻿@page "/redirecttoappsite"
+@inject NavigationManager navigationManager
+@code {
+    protected override async Task OnInitializedAsync() => navigationManager.NavigateTo("appsite");
+}

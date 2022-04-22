@@ -1,9 +1,9 @@
 ﻿@page "/register"
+@inject NavigationManager navigationManager
 
 <PageTitle>Register</PageTitle>
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-    @if (_registerSuccessful == false)
-{
+ 
     <MudText Typo="Typo.h4">Register</MudText>
     <EditForm Model="_userToRegister" OnValidSubmit="RegisterUser">
     <DataAnnotationsValidator/>
@@ -17,84 +17,84 @@
                                   @bind-Value="_userToRegister.LastName" For="@(() => _userToRegister.LastName)"/>
                     <MudTextField Label="Address" Class="mt-3"
                                   @bind-Value="_userToRegister.Address" For="@(() => _userToRegister.Address)"/>
-                    <MudTextField Label="Email" Class="mt-3"
-                                  @bind-Value="_userToRegister.Email" For="@(() => _userToRegister.Email)"/>
-                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
-                                  @bind-Value="_userToRegister.PasswordHash" For="@(() => _userToRegister.PasswordHash)" InputType="InputType.Password"/>
                     <MudTextField Label="Phone" Class="mt-3"
                                   @bind-Value="_userToRegister.Phone" For="@(() => _userToRegister.Phone)"/>
+                    <MudTextField Label="Email" Class="mt-3"
+                                  @bind-Value="_userToRegister.Email" For="@(() => _userToRegister.Email)"/>
+                    <MudTextField Label="Password" HelperText="choose a strong password" Class="mt-3"
+                                  @bind-Value="_userToRegister.Password" For="@(() => _userToRegister.Password)" InputType="InputType.Password"/>
+                    <MudTextField Label="Confirm password" HelperText="confirm password" Class="mt-3"
+                                  @bind-Value="_userToRegister.ConfirmPassword" For="@(() => _userToRegister.ConfirmPassword)" InputType="InputType.Password"/>
                     <MudSpacer/>
                     <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Class="ml-n2" Label="I agree!" @bind-Checked="_IAgree" Size="Size.Large"/>
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Parent")" Class="ml-auto" Disabled="@(!_IAgree)">Register Parent</MudButton>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Teacher")" Class="ml-auto" Disabled="@(!_IAgree)">register Teacher</MudButton>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Director")" Class="ml-auto" Disabled="@(!_IAgree)">register Director</MudButton>
+                    @*<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Teacher")" Class="ml-auto" Disabled="@(!_IAgree)">register Teacher</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Director")" Class="ml-auto" Disabled="@(!_IAgree)">register Director</MudButton>*@
                     
                 </MudCardActions>
             </MudCard>
         </MudItem>
         <MudItem xs="12" sm="5">
             <MudPaper Class="pa-4 mud-height-full">
-                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
-                @if (_atemptToRegisterFailed == true)
-                {
-                    <MudText Color="@Color.Error">
-                        <ValidationSummary />
-                    </MudText>
-                    <MudText Color="@Color.Info">
-                        @_atemptToRegisterFailedErrorMessage
-                        _________
-                    </MudText>
-                }
-                else
+            <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                @if (success)
                 {
                     <MudText Color="Color.Success">Success</MudText>
                 }
+                else
+                {
+                    <MudText Typo="Typo.body2" Color="@Color.Error">
+                        <ValidationSummary />   
+                    </MudText>
+                    @if (serverErrorMessage != null)
+                    {
+                        foreach (var error in serverErrorMessage)
+                        {
+                            <MudText Typo="Typo.body2" Color="@Color.Error">
+                                @error  
+                            </MudText>
+                        }
+                    }
+                }
             </MudPaper>
-        </MudItem>
-        <MudItem xs="12">
-            <MudText Typo="Typo.body2" Align="Align.Center">
-                Fill out the form correctly to see the success message.
-            </MudText>
         </MudItem>
     </MudGrid>
         </EditForm>
-    }
-    else
-    {
-        <MudText Color="@Color.Success">
-            <h4>Register successful! Press the button bellow to go to the sign in page.</h4>
-            <a href="/signin">Sign in</a>
-        </MudText>
-    }
 </MudContainer>
 
 @code {
     [Inject] HttpClient HttpClient { get; set; }
-    private User _userToRegister = new() { Email = "user@example.com", PasswordHash = "Password1!" };
+    private UserToRegister _userToRegister = new() {FirstName="Dušan", LastName="Uličný", Address="Střední 55", Phone = "123123123", Email="dusan@nafukovacireklama.cz"};
     private bool _registerSuccessful = false;
-    private bool _atemptToRegisterFailed = false;
-    private string? _atemptToRegisterFailedErrorMessage = null;
+    private bool success = false;
     public bool _IAgree { get; set; } = false;
     public string _role { get; set; }
+    public List<string> serverErrorMessage { get; set; } = new();
 
     private async Task RegisterUser()
     {
-        _atemptToRegisterFailed = false;
+        success = false;
 
-        HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync($"/api/user/register/{_role}", _userToRegister);
-
-        if (httpResponseMessage.IsSuccessStatusCode)
+        if (_userToRegister.Password != _userToRegister.ConfirmPassword)
         {
-            _registerSuccessful = true;
+            serverErrorMessage.Add("confirm password does not match with password.");    
         }
         else
         {
-            string serverErrorMessage = await httpResponseMessage.Content.ReadAsStringAsync();
+            HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync($"/api/user/register/{_role}", _userToRegister);
 
-            _atemptToRegisterFailedErrorMessage = $"{serverErrorMessage} Please change your input and try again.";
-            _atemptToRegisterFailed = true;
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                _registerSuccessful = true;
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                serverErrorMessage = await httpResponseMessage.Content.ReadFromJsonAsync<List<string>>();
+                success = false;
+            }
         }
     }
 }
