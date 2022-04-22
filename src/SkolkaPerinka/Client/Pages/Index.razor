@@ -5,11 +5,8 @@
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
     <PageTitle>Index</PageTitle>
-    <MudPaper Elevation="5">
-        <MudText>@language["Pozdrav"]</MudText>
-        <NavLink class="nav-link" href="fetchdata">
-            <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-        </NavLink>
+    <MudPaper Elevation="0">
+        <h1 Class="header-text">@language["IndexText1"]</h1>
     </MudPaper>
     
     <AuthorizeView>
@@ -20,4 +17,7 @@
             <SignIn />
         </NotAuthorized>
     </AuthorizeView>
+    <NavLink class="nav-link" href="fetchdata">
+        <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+    </NavLink>
 </MudContainer>

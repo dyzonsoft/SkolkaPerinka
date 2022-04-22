@@ -1,24 +1,26 @@
-﻿@page "/signin"
+﻿
+@page "/signin"
 @using Blazored.LocalStorage
 @using SkolkaPerinka.Client.Providers
 @inject NavigationManager navigationManager
+@inject ILanguageContainerService language
 
 <PageTitle>Sign in</PageTitle>
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-    <MudText Typo="Typo.h4">Sign in</MudText>
+    <MudText Typo="Typo.h4">@language["Prihlaseni"]</MudText>
     <EditForm Model="_userToSignIn" OnValidSubmit="signInUser">
             <DataAnnotationsValidator/>
             <MudGrid>
                 <MudItem xs="12" sm="7">
                     <MudCard>
                         <MudCardContent>
-                            <MudTextField Label="Email" Class="mt-3"
+                            <MudTextField Label="@language["Email"]" Class="mt-3"
                                           @bind-Value="_userToSignIn.Email" For="@(() => _userToSignIn.Email)"/>
-                            <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                            <MudTextField Label="@language["Heslo"]" HelperText="Choose a strong password" Class="mt-3"
                                           @bind-Value="_userToSignIn.Password" For="@(() => _userToSignIn.Password)" InputType="InputType.Password"/>
                         </MudCardContent>
                         <MudCardActions>
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">signIn</MudButton>
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@language["Prihlasit"]</MudButton>
                             or
                             <MudNavLink Href="register">register</MudNavLink>
                         </MudCardActions>
@@ -26,10 +28,10 @@
                 </MudItem>
                 <MudItem xs="12" sm="5">
                     <MudPaper Class="pa-4 mud-height-full">
-                        <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                        <MudText Typo="Typo.subtitle2">@language["ChybyOvereni"] :</MudText>
                         @if (success)
                         {
-                            <MudText Color="Color.Success">Success</MudText>
+                            <MudText Color="Color.Success">@language["Prihlasen"]</MudText>
                         }
                         else
                         {
@@ -43,30 +45,3 @@
         </EditForm>
 </MudContainer>
 
-@code {
-    [Inject] HttpClient HttpClient { get; set; }
-    [Inject] ILocalStorageService LocalStorageService { get; set; }
-    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-    private UserToSigniIn _userToSignIn = new() { Email = "parent@example.com", Password = "Password1!" };
-    private bool _signInSuccessful = false;
-    private bool success = false;
-
-    private async Task signInUser()
-    {
-        HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync("/api/user/signin", _userToSignIn);
-
-        if (httpResponseMessage.IsSuccessStatusCode)
-        {
-            string jsonWebToken = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            await LocalStorageService.SetItemAsync("bearerToken", jsonWebToken);
-
-            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
-
-            success = true;
-
-            HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", jsonWebToken);
-            navigationManager.NavigateTo("appsite");
-        }
-    }
-}

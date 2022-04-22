@@ -1,35 +1,37 @@
 ﻿@page "/register"
 @inject NavigationManager navigationManager
+@inject ILanguageContainerService language
 
 <PageTitle>Register</PageTitle>
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
  
-    <MudText Typo="Typo.h4">Register</MudText>
+    <MudText Typo="Typo.h4">@language["Registrace"]</MudText>
     <EditForm Model="_userToRegister" OnValidSubmit="RegisterUser">
     <DataAnnotationsValidator/>
     <MudGrid>
         <MudItem xs="12" sm="7">
             <MudCard>
                 <MudCardContent>
-                    <MudTextField Label="First name" Class="mt-3"
+                    <MudTextField Label="@language["KrestniJmeno"]" Class="mt-3"
                                   @bind-Value="_userToRegister.FirstName" For="@(() => _userToRegister.FirstName)"/>
-                    <MudTextField Label="Last name" Class="mt-3"
+                    <MudTextField Label="@language["Prijmeni"]" Class="mt-3"
                                   @bind-Value="_userToRegister.LastName" For="@(() => _userToRegister.LastName)"/>
-                    <MudTextField Label="Address" Class="mt-3"
+                    <MudTextField Label="@language["Adresa"]" Class="mt-3"
                                   @bind-Value="_userToRegister.Address" For="@(() => _userToRegister.Address)"/>
-                    <MudTextField Label="Phone" Class="mt-3"
+                    <MudTextField Label="@language["Telefon"]" Class="mt-3"
                                   @bind-Value="_userToRegister.Phone" For="@(() => _userToRegister.Phone)"/>
-                    <MudTextField Label="Email" Class="mt-3"
+                    <MudTextField Label="@language["Email"]" Class="mt-3"
                                   @bind-Value="_userToRegister.Email" For="@(() => _userToRegister.Email)"/>
-                    <MudTextField Label="Password" HelperText="choose a strong password" Class="mt-3"
+                    <MudTextField Label="@language["Heslo"]" HelperText="@language["HesloHelp"]" Class="mt-3"
                                   @bind-Value="_userToRegister.Password" For="@(() => _userToRegister.Password)" InputType="InputType.Password"/>
-                    <MudTextField Label="Confirm password" HelperText="confirm password" Class="mt-3"
+                    <MudTextField Label="@language["HesloZnovu"]" HelperText="@language["PotvrditHeslo"]" Class="mt-3"
                                   @bind-Value="_userToRegister.ConfirmPassword" For="@(() => _userToRegister.ConfirmPassword)" InputType="InputType.Password"/>
                     <MudSpacer/>
-                    <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Class="ml-n2" Label="I agree!" @bind-Checked="_IAgree" Size="Size.Large"/>
+                    <MudCheckBox T="bool" Required="true" RequiredError="@language["SouhlasPodminky"]" Class="ml-n2" Label="@language["SouhlasPodminek"]" @bind-Checked="_IAgree" Size="Size.Large"/>
+                    <MudLink Href="#">@language["Podminky"]</MudLink>
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Parent")" Class="ml-auto" Disabled="@(!_IAgree)">Register Parent</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Parent")" Class="ml-auto" Disabled="@(!_IAgree)">@language["Registrovat"]</MudButton>
                     @*<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Teacher")" Class="ml-auto" Disabled="@(!_IAgree)">register Teacher</MudButton>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="@(()=> _role = "Director")" Class="ml-auto" Disabled="@(!_IAgree)">register Director</MudButton>*@
                     
@@ -38,7 +40,7 @@
         </MudItem>
         <MudItem xs="12" sm="5">
             <MudPaper Class="pa-4 mud-height-full">
-            <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+            <MudText Typo="Typo.subtitle2">@language["ChybyOvereni"] :</MudText>
                 @if (success)
                 {
                     <MudText Color="Color.Success">Success</MudText>
@@ -63,38 +65,3 @@
     </MudGrid>
         </EditForm>
 </MudContainer>
-
-@code {
-    [Inject] HttpClient HttpClient { get; set; }
-    private UserToRegister _userToRegister = new() {FirstName="Dušan", LastName="Uličný", Address="Střední 55", Phone = "123123123", Email="dusan@nafukovacireklama.cz"};
-    private bool _registerSuccessful = false;
-    private bool success = false;
-    public bool _IAgree { get; set; } = false;
-    public string _role { get; set; }
-    public List<string> serverErrorMessage { get; set; } = new();
-
-    private async Task RegisterUser()
-    {
-        success = false;
-
-        if (_userToRegister.Password != _userToRegister.ConfirmPassword)
-        {
-            serverErrorMessage.Add("confirm password does not match with password.");    
-        }
-        else
-        {
-            HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync($"/api/user/register/{_role}", _userToRegister);
-
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                _registerSuccessful = true;
-                navigationManager.NavigateTo("/");
-            }
-            else
-            {
-                serverErrorMessage = await httpResponseMessage.Content.ReadFromJsonAsync<List<string>>();
-                success = false;
-            }
-        }
-    }
-}
