@@ -3,12 +3,12 @@
 @*@attribute [Authorize]*@
 
 <MudLayout>
-    <MudAppBar Elevation="1">
+    <MudAppBar Elevation="1" Color="Color.Info">
         <MudText Typo="Typo.h5" Class="ml-3">Peřinka</MudText>
         <MudSpacer />
         <AuthorizeView>
             <Authorized>
-                @context.User.Identity.Name!
+                @context.User.Identity.Name
                 <MudButton OnClick="SignOut">Sign out</MudButton>
             </Authorized>
         </AuthorizeView>

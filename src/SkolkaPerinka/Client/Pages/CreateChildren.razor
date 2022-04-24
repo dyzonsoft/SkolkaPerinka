@@ -1,0 +1,60 @@
+﻿@page "/createchildren"
+@inject ILanguageContainerService language
+@inject NavigationManager navigationManager
+
+<PageTitle>Register</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+ 
+    <MudText Typo="Typo.h4">@language["RegistraceDitete"]</MudText>
+    <EditForm Model="_childrenToRegister" OnValidSubmit="RegisterChildren">
+    <DataAnnotationsValidator/>
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudRadioGroup @bind-SelectedOption="_childrenToRegister.Gender">
+                        <MudRadio Option="@("Boy")" Color="Color.Primary" Dense="true">@language["Kluk"]</MudRadio>
+                        <MudRadio Option="@("Girl")" Color="Color.Secondary" Dense="false">@language["Holka"]</MudRadio>
+                    </MudRadioGroup>
+                    <MudDatePicker Orientation="Orientation.Landscape" Label="@language["DatumNarozeni"]" @bind-Date="@_childrenToRegister.BirthDate" />
+                    <MudTextField Label="@language["KrestniJmeno"]" Class="mt-3"
+                                  @bind-Value="_childrenToRegister.FirstName" For="@(() => _childrenToRegister.FirstName)"/>
+                    <MudTextField Label="@language["Prijmeni"]" Class="mt-3"
+                                  @bind-Value="_childrenToRegister.LastName" For="@(() => _childrenToRegister.LastName)"/>
+                    <MudTextField Label="@language["AdresaDitete"]" Class="mt-3"
+                                  @bind-Value="_childrenToRegister.Address" For="@(() => _childrenToRegister.Address)"/>
+                    <MudSpacer/>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" Disabled="@(!context.Validate())">@language["RegistrovatDite"]</MudButton>
+                    
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+            <MudText Typo="Typo.subtitle2">@language["ChybyOvereni"] :</MudText>
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Success</MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.body2" Color="@Color.Error">
+                        <ValidationSummary />   
+                    </MudText>
+                    @if (serverErrorMessage != null)
+                    {
+                        foreach (var error in serverErrorMessage)
+                        {
+                            <MudText Typo="Typo.body2" Color="@Color.Error">
+                                @error  
+                            </MudText>
+                        }
+                    }
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+        </EditForm>
+</MudContainer>

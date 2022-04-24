@@ -9,15 +9,13 @@ using System.Text;
 
 namespace SkolkaPerinka.Server.Controllers
 {
-    [Route("api/[Controller]")]
     [ApiController]
+    [Route("api/[Controller]")]
     public class UserController : Controller
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-
-        // tvoje doména.com/api/user
 
         public UserController(SignInManager<User> signInManager, UserManager<User> userManager, IConfiguration configuration)
         {
@@ -26,8 +24,6 @@ namespace SkolkaPerinka.Server.Controllers
             _configuration = configuration;
         }
 
-        // tvoje doména.com/api/user/register
-        //[Route("register")]
         [AllowAnonymous]
         [HttpPost("register/{role}")]
         public async Task<IActionResult> Register([FromBody] UserToRegister user, string role)
