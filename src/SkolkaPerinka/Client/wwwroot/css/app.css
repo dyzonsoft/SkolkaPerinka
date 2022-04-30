@@ -97,7 +97,7 @@ a, .btn-link {
 .children-item-checkbox, .children-item-delete {
     position: absolute;
     right: 10px;
-    top: -5px;
+    top: 0px;
 }
 
 .muj-checkbox {
@@ -124,7 +124,11 @@ a, .btn-link {
 .mud-grid-spacing-xs-3 > .mud-grid-item {
     padding: 2px;
 }
-    /*.children-item-checkbox {
+
+.mud-icon-button {
+    padding: 6px !important;
+}
+/*.children-item-checkbox {
     top: -10px;
     
 }
@@ -132,8 +136,8 @@ a, .btn-link {
 .children-item-delete {
     top: 0px;
 }*/
-    /* ====================================================================================================================   Calendar */
-    .calendar {
+/* ====================================================================================================================   Calendar */
+.calendar {
     position: relative;
 }
 

@@ -1,10 +1,18 @@
 ﻿@inject ILanguageContainerService language
 @inject NavigationManager navigationManager
 
+@if (Days == null)
+{
+    <MudSkeleton />
+    <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
+    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />
+}
+else
+{    
 <MudPaper Class="rounded action-panel">
-    <MudText Color="Color.Default" @onclick="(() => CalendarBack())"><MudIcon Icon="@Icons.Filled.KeyboardDoubleArrowLeft" Class="calendar-arrow"></MudIcon></MudText>
+    <MudText Color="Color.Default" @onclick="(() => CalendarBack())"><MudIcon Icon="@Icons.Filled.KeyboardDoubleArrowLeft" Class="calendar-arrow" Size="Size.Large"></MudIcon></MudText>
     <MudText Typo="Typo.h6" Color="Color.Primary" Class="calendar-date">@language[MonthString]  @YearString </MudText>
-    <MudText Color="Color.Default" @onclick="(() => CalendarNext())"><MudIcon Icon="@Icons.Filled.KeyboardDoubleArrowRight" Class="calendar-arrow"></MudIcon></MudText>
+    <MudText Color="Color.Default" @onclick="(() => CalendarNext())"><MudIcon Icon="@Icons.Filled.KeyboardDoubleArrowRight" Class="calendar-arrow" Size="Size.Large"></MudIcon></MudText>
 </MudPaper>
     <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
         <div Class="mujgrid calendar-header">
@@ -67,6 +75,7 @@
         }
     }
 </div>
+}
 
 
 

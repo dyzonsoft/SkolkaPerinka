@@ -25,7 +25,7 @@ namespace SkolkaPerinka.Client.Pages
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"/api/calendar/addchildrenstoschool", _childrenToSchool);
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-                Snackbar.Add("zapsání probìhlo úspìšnì", Severity.Success);
+                Snackbar.Add(language["Hotovo"], Severity.Success);
                 navigationManager.NavigateTo("appsite");
             }
             else

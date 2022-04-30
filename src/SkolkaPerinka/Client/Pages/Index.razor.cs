@@ -12,6 +12,8 @@ namespace SkolkaPerinka.Client.Pages
         [Inject] HttpClient HttpClient { get; set; }
         [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject] ILocalStorageService LocalStorageService { get; set; }
+        [CascadingParameter] protected Task<AuthenticationState> authenticationState { get; set; }
+        private bool _access { get; set; }
         protected override async Task OnInitializedAsync()
         {
             if (await LocalStorageService.ContainKeyAsync("bearerToken"))
@@ -19,6 +21,9 @@ namespace SkolkaPerinka.Client.Pages
                 string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
                 await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
                 HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+                var user = (await authenticationState).User;
+                var access = user.Identity.Name;
                 StateHasChanged();
             }
 

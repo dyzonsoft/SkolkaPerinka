@@ -4,6 +4,8 @@ using global::SkolkaPerinka.Shared.Models;
 using Blazored.LocalStorage;
 using SkolkaPerinka.Client.Providers;
 using AKSoftware.Localization.MultiLanguages.Blazor;
+using static MudBlazor.CategoryTypes;
+using MudBlazor;
 
 namespace SkolkaPerinka.Client.Pages
 {
@@ -25,6 +27,8 @@ namespace SkolkaPerinka.Client.Pages
         private async Task signInUser()
         {
             HttpResponseMessage httpResponseMessage = await HttpClient.PostAsJsonAsync("/api/user/signin", _userToSignIn);
+            var errorMessage = httpResponseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 string jsonWebToken = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -33,6 +37,11 @@ namespace SkolkaPerinka.Client.Pages
                 success = true;
                 HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", jsonWebToken);
                 navigationManager.NavigateTo("appsite");
+            }
+            else
+            {
+                if (errorMessage == "NotAccess") Snackbar.Add(language["AccessFalse"], Severity.Error);
+                    else Snackbar.Add(language["UserFalse"], Severity.Error);
             }
         }
 

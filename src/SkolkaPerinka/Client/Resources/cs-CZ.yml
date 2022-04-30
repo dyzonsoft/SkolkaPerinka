@@ -38,6 +38,7 @@ Podminky: Podmínky
 Prihlaseni: Přihlášení
 Prihlasit: Přihlásit
 Prihlasen: Přihlášen
+UserFalse: jméno, nebo heslo není správně.
 
 VaseDeti: Vaše děti
 RegistrovatDite: Registrovat dítě
@@ -50,5 +51,7 @@ PrihlaseniDetiDoSkolky: Přihlášení dětí do školky
 SignChildrenDay: jeden den
 SignChildrenWeek: do konce týdne
 SignChildrenMonth: do konce měsíce
+Hotovo: Hotovo
+AccessFalse: zatím Vám nebyl povolen přístup, kontaktujte ředitele školky.
 
 SoNeCannotVariantWeek: v sobotu a neděli nemůžete přihlásit dítě s výběrem -do konce týdne-. Prosím vyberte -na jeden den-

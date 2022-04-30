@@ -6,6 +6,7 @@ using SkolkaPerinka.Shared.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace SkolkaPerinka.Server.Controllers
 {
@@ -72,12 +73,19 @@ namespace SkolkaPerinka.Server.Controllers
             string username = user.Email;
             string password = user.Password;
 
-            Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(username, password, false, false);
+            SignInResult signInResult = await _signInManager.PasswordSignInAsync(username, password, false, false);
             if (signInResult.Succeeded == true)
             {
                 User identityUser = await _userManager.FindByNameAsync(username);
-                string JSONWebTokenAsString = await GenerateJSONWebToken(identityUser);
-                return Ok(JSONWebTokenAsString);
+                if (identityUser.Access)
+                {
+                    string JSONWebTokenAsString = await GenerateJSONWebToken(identityUser);
+                    return Ok(JSONWebTokenAsString);
+                }
+                else
+                {
+                    return Unauthorized("NotAccess");
+                }
             }
             else
             {

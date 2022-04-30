@@ -8,7 +8,9 @@
         </MudListSubheader>
         @if (childrens == null)
         {
-            <p>Loading ... </p>           
+            <MudSkeleton />
+            <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />         
         }
         else
         {

@@ -19,5 +19,7 @@ namespace SkolkaPerinka.Shared.Models
         //[DataType(DataType.PhoneNumber, ErrorMessage = "špatné telefonní číslo.")]
         //[RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "neplatné telefonní číslo.")]
         public string Phone { get; set; }
+
+        public bool Access { get; set; } = false;
     }
 }
