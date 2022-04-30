@@ -16,14 +16,23 @@
                         <MudCardContent>
                             <MudTextField Label="@language["Email"]" Class="mt-3"
                                           @bind-Value="_userToSignIn.Email" For="@(() => _userToSignIn.Email)"/>
-                            <MudTextField Label="@language["Heslo"]" HelperText="Choose a strong password" Class="mt-3"
+                            <MudTextField Label="@language["Heslo"]" HelperText="@language["HesloHelp"]" Class="mt-3"
                                           @bind-Value="_userToSignIn.Password" For="@(() => _userToSignIn.Password)" InputType="InputType.Password"/>
                         </MudCardContent>
-                        <MudCardActions>
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@language["Prihlasit"]</MudButton>
-                            or
-                            <MudNavLink Href="register">register</MudNavLink>
-                        </MudCardActions>
+                        <MudPaper>
+                            <MudPaper Elevation="0" Width="100%" Class="text-center">
+                                <MudFab ButtonType="ButtonType.Submit" Color="Color.Info" Class="muj-button" Label="@language["Prihlasit"]"></MudFab>
+                            </MudPaper>
+                            <div class="flex">
+                                <MudText Class="or-line"></MudText>
+                                <MudText> or </MudText>
+                                <MudText Class="or-line"></MudText>
+                            </div>
+                            <MudPaper Elevation="0" Width="100%" Class="text-center">
+                                <MudFab StartIcon="@Icons.Filled.PersonAdd" Color="Color.Default" Class="muj-button" Label="@language["Register"]" @onclick="RegisterUser"></MudFab>
+                            </MudPaper>
+                            <br />
+                        </MudPaper>
                     </MudCard>
                 </MudItem>
                 <MudItem xs="12" sm="5">

@@ -46,3 +46,9 @@ AdresaDitete: Adresa trvalého pobytu
 DatumNarozeni: Datum narození
 Kluk: kluk
 Holka: holka
+PrihlaseniDetiDoSkolky: Přihlášení dětí do školky
+SignChildrenDay: jeden den
+SignChildrenWeek: do konce týdne
+SignChildrenMonth: do konce měsíce
+
+SoNeCannotVariantWeek: v sobotu a neděli nemůžete přihlásit dítě s výběrem -do konce týdne-. Prosím vyberte -na jeden den-

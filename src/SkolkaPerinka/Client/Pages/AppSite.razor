@@ -1,14 +1,18 @@
 ﻿@page "/appsite"
 @inject ILanguageContainerService language
+@inject NavigationManager navigationManager
 
-<MudContainer MaxWidth="MaxWidth.Large" Class="pa-4">
-    <MudGrid Class="mt-5 pa-1">
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudGrid Class="mt-5">
         <MudItem xs="12" lg="5">
             <MudPaper Width="100%" Height="100%">
-                <Childrens/>
+                <MudPaper Elevation="0" Width="100%" Class="text-end">
+                    <MudFab StartIcon="@Icons.Filled.PersonAdd" Color="Color.Default" Class="align-button-right" Label="@language["RegistrovatDite"]" @onclick="CreateChildren"></MudFab>
+                </MudPaper>
+                <Childrens _selectedDate="@DateTime.Today.ToString()" _withCheckBox="false" _withDelete="true" _parentEmail="@parentEmail" />
             </MudPaper>
         </MudItem>
-        <MudItem xs="12" lg="7" Class="p-2 pb-4">
+        <MudItem xs="12" lg="7" Class="pb-4">
             <MudPaper Width="100%" Height="100%" Class="pa-4 calendar">
                 <Calendar/>
             </MudPaper>

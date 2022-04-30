@@ -1,15 +1,16 @@
 ﻿@inject ILanguageContainerService language
+@inject HttpClient httpClient
 
-@*<MudFab StartIcon="@Icons.Filled.Bookmark" Label="Bookmark" />*@
-<MudPaper Elevation="0" Width="100%" Class="text-end">
-    <MudFab StartIcon="@Icons.Filled.PersonAdd" Color="Color.Default" Class="align-button-right" Label="@language["RegistrovatDite"]" @onclick="CreateChildren"></MudFab>
-</MudPaper>
-<MudPaper Width="90%">
+<MudPaper Width="100%">
     <MudList Clickable="true">
         <MudListSubheader>
             @language["VaseDeti"] :
         </MudListSubheader>
-        @if (childrens != null)
+        @if (childrens == null)
+        {
+            <p>Loading ... </p>           
+        }
+        else
         {
             foreach (var children in childrens)
             {
@@ -17,10 +18,21 @@
                 if (children.Gender == "Girl") genderColor = Color.Secondary;
                 <MudListItem IconColor="@genderColor" IconSize="Size.Large" Icon="@Icons.Filled.ChildCare">
                     <MudText>@children.FirstName   @children.LastName</MudText>
+
+                    @if (_withCheckBox)
+                    {
+                        <input @key="children" class="muj-checkbox" type="checkbox" @onchange="@(e => ChangeCheckBoxAsync(e, children.Id))" checked="@children.Checked" />
+                    }
+                    @if (_withDelete)
+                    {
+                        <MudIconButton Class="children-item-delete" Icon="@Icons.Rounded.DeleteForever" Size="Size.Large" Color="Color.Error" aria-label="delete" 
+                            @onclick="() => DeleteChildren(children.Id)">
+                        </MudIconButton>
+
+                    }
+                    
                 </MudListItem>
             }
         }
     </MudList>
 </MudPaper>
-
-

@@ -7,25 +7,43 @@ namespace SkolkaPerinka.Client.Components
 {
     public partial class Childrens
     {
-        [Inject] HttpClient httpClient { get; set; }
-        [Inject] NavigationManager navigationManager { get; set; }
+        [Parameter] public bool _withCheckBox { get; set; }
+        [Parameter] public bool _withDelete { get; set; }
+        [Parameter] public string _selectedDate { get; set; }
+        [Parameter] public string _parentEmail { get; set; }
+        [Parameter] public EventCallback<List<Children>> OnSetChildrensToParentComponent { get; set; }
+        [Parameter] public EventCallback<Children> OnSetChildrensCheckBoxToParentComponent { get; set; }
 
         private List<Children> childrens = new List<Children>();
-        [CascadingParameter]  protected Task<AuthenticationState> authenticationState { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            var user = (await authenticationState).User;
-            string parentEmail = user.FindFirst(c => c.Type == "sub")?.Value;
-            childrens = await httpClient.GetFromJsonAsync<List<Children>>($"/api/childrens/getchildrensforparent/{parentEmail}");
+            childrens = await httpClient.GetFromJsonAsync<List<Children>>($"/api/childrens/getchildrensforparent/{_parentEmail}/{_selectedDate}");
+            await OnSetChildrensToParentComponent.InvokeAsync(childrens);
 
             language.InitLocalizedComponent(this);
-            StateHasChanged();
         }
 
-        private async Task CreateChildren()
+        private async Task ChangeCheckBoxAsync(ChangeEventArgs e, int childrenId)
         {
-            navigationManager.NavigateTo("createchildren");
+            Children children = childrens.FirstOrDefault(ch => ch.Id == childrenId);
+            children.Checked = (bool)e.Value;
+            await OnSetChildrensCheckBoxToParentComponent.InvokeAsync(children);
+        }
+
+        private async Task DeleteChildren(int childrenId)
+        {
+            Children children = childrens.FirstOrDefault(c => c.Id == childrenId);
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"/api/childrens/delete", children);
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                childrens = await httpClient.GetFromJsonAsync<List<Children>>($"/api/childrens/getchildrensforparent/{_parentEmail}");
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine(httpResponseMessage.Content);
+            }
         }
     }
 }

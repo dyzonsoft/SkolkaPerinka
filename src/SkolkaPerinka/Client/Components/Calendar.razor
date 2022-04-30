@@ -6,30 +6,31 @@
     <MudText Typo="Typo.h6" Color="Color.Primary" Class="calendar-date">@language[MonthString]  @YearString </MudText>
     <MudText Color="Color.Default" @onclick="(() => CalendarNext())"><MudIcon Icon="@Icons.Filled.KeyboardDoubleArrowRight" Class="calendar-arrow"></MudIcon></MudText>
 </MudPaper>
-<div Class="mujgrid calendar-header">
-        <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
-            <MudText Typo="Typo.body2" Color="Color.Default">@language["pondeli"]</MudText>
-        </MudPaper>
-        <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
-            <MudText Typo="Typo.body2" Color="Color.Default">@language["utery"]</MudText>
-        </MudPaper>
-        <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
-            <MudText Typo="Typo.body2" Color="Color.Default">@language["streda"]</MudText>
-        </MudPaper>
-        <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
-            <MudText Typo="Typo.body2" Color="Color.Default">@language["ctvrtek"]</MudText>
-        </MudPaper>
-        <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
-            <MudText Typo="Typo.body2" Color="Color.Default">@language["patek"]</MudText>
-        </MudPaper>
-        <MudPaper Class="rounded text-center header-text weekend-day" Elevation="1">
-            <MudText Typo="Typo.body2" Color="Color.Default">@language["sobota"]</MudText>
-        </MudPaper>
-        <MudPaper Class="rounded text-center header-text weekend-day" Elevation="1">
-            <MudText Typo="Typo.body2" Color="Color.Default">@language["nedele"]</MudText>
-        </MudPaper>
-        
-</div>
+    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+        <div Class="mujgrid calendar-header">
+            <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
+                <MudText Typo="Typo.body2" Color="Color.Default">@language["pondeli"]</MudText>
+            </MudPaper>
+            <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
+                <MudText Typo="Typo.body2" Color="Color.Default">@language["utery"]</MudText>
+            </MudPaper>
+            <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
+                <MudText Typo="Typo.body2" Color="Color.Default">@language["streda"]</MudText>
+            </MudPaper>
+            <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
+                <MudText Typo="Typo.body2" Color="Color.Default">@language["ctvrtek"]</MudText>
+            </MudPaper>
+            <MudPaper Class="rounded text-center header-text" Width="100%" Elevation="1">
+                <MudText Typo="Typo.body2" Color="Color.Default">@language["patek"]</MudText>
+            </MudPaper>
+            <MudPaper Class="rounded text-center header-text weekend-day" Elevation="1">
+                <MudText Typo="Typo.body2" Color="Color.Default">@language["sobota"]</MudText>
+            </MudPaper>
+            <MudPaper Class="rounded text-center header-text weekend-day" Elevation="1">
+                <MudText Typo="Typo.body2" Color="Color.Default">@language["nedele"]</MudText>
+            </MudPaper>
+        </div>
+     </MudHidden>   
 <div class="mujgrid weekend-panel">
     @if (Days == null)
     {
@@ -46,18 +47,21 @@
                 <MudPaper Class="text-center rounded datum current-month-background p-2" Elevation="5" @onclick="(() => DateClick(day.Date))">
                     <MudText Class="date-number" Color="Color.Default">@day.Date.Day.</MudText>
                     <MudText Class="date-childrens" Color="Color.Success">@pocetDeti</MudText>
+                    <ParentChildrensInCalendar _parentChildrens="day.ChildrensOfParentIcon" />
                 </MudPaper>
             } else if (day.Background == "today-background")
             {
                 <MudPaper Class="text-center rounded datum today-background p-2" Elevation="5" @onclick="(() => DateClick(day.Date))">
                     <MudText Class="date-number fw-bold" Color="Color.Info">@day.Date.Day.</MudText>
                     <MudText Class="date-childrens" Color="Color.Success">@pocetDeti</MudText>
+                    <ParentChildrensInCalendar _parentChildrens="day.ChildrensOfParentIcon" />
                 </MudPaper>
             } else
             {
                 <MudPaper Class="text-center rounded datum p-2" Elevation="5" @onclick="(() => DateClick(day.Date))">
                     <MudText Class="date-number" Color="Color.Default">@day.Date.Day.</MudText>
                     <MudText Class="date-childrens" Color="Color.Default">@pocetDeti</MudText>
+                    <ParentChildrensInCalendar _parentChildrens="day.ChildrensOfParentIcon" />
                 </MudPaper>
             }
         }

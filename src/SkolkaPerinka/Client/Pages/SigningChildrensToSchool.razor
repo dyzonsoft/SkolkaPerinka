@@ -1,0 +1,41 @@
+﻿@page "/signingchildrenstoschool/{SelectedDate}"
+@inject NavigationManager navigationManager
+@inject ILanguageContainerService language
+@inject HttpClient httpClient
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject ISnackbar Snackbar
+
+<PageTitle>Registration of the child in kindergarten on the date</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+ 
+    <MudText Typo="Typo.h5">@language["PrihlaseniDetiDoSkolky"]</MudText>
+    <MudText Typo="Typo.h4" Color="Color.Info">@SelectedDate</MudText>
+    <EditForm Model="_childrenToSchool" OnValidSubmit="SignedChildren">
+    <DataAnnotationsValidator/>
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudRadioGroup @bind-SelectedOption="_childrenToSchool.Variant">
+                        <MudRadio Option="@("Day")" Color="Color.Primary" Dense="true" >@language["SignChildrenDay"]</MudRadio>
+                        <MudRadio Option="@("Week")" Color="Color.Primary" Dense="false">@language["SignChildrenWeek"]</MudRadio>
+                        <MudRadio Option="@("Month")" Color="Color.Primary" Dense="false">@language["SignChildrenMonth"]</MudRadio>
+                    </MudRadioGroup>
+                    
+                    <Childrens OnSetChildrensCheckBoxToParentComponent="SetChildrensCheckBoxToParentComponent" 
+                        OnSetChildrensToParentComponent="SetChildrensToParentComponent" _selectedDate="@SelectedDate" 
+                        _withCheckBox="true" _withDelete="false" _parentEmail="@parentEmail" />
+                    
+                    <MudSpacer/>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" Disabled="@(!context.Validate())">@language["Prihlasit"]</MudButton>
+                    
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+       
+    </MudGrid>
+        </EditForm>
+</MudContainer>

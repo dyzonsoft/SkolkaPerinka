@@ -1,0 +1,17 @@
+﻿
+@if (_parentChildrens != null)
+{
+    <div Class="parent-children-icon-bar">
+        @foreach (var child in _parentChildrens)
+        {
+            MudBlazor.Color genderColor = Color.Info;
+            @if (child.Gender == "Girl") genderColor = Color.Secondary;
+            <MudIcon Color="@genderColor" Size="Size.Small" Icon="@Icons.Filled.ChildCare" Title="@child.Name" Class="calendar-icon" />
+        }
+    </div>
+}
+
+
+@code {
+    [Parameter] public List<ChildrenOfParentIcon> _parentChildrens { get; set; }
+}

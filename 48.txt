@@ -1,0 +1,16 @@
+microsoft.aspnetcore.components
+microsoft.aspnetcore.components.web
+microsoft.extensions.dependencyinjection.abstraction
+
+blazored.toast
+builder.services.AddBlazoredToast();
+<link bootstrap awesome
+<link href="_content/Blazored.Toast/blazored-toast.css" rel="stylesheet"/>
+
+inport:
+Blazored
+Blazored.Toast
+Blazored.Toast.Services
+
+@inject IToastService toastService
+@onclick="@(()=> toastService.ShowInfo("blabla"))"

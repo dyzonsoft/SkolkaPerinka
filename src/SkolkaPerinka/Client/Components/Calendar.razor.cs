@@ -16,6 +16,7 @@ namespace SkolkaPerinka.Client.Components
         private DateTime CurrentMonthonth { get; set; }
         [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
         bool _isAuthenticated;
+        private string _parentEmail;
 
         protected override async Task OnInitializedAsync()
         {
@@ -26,9 +27,10 @@ namespace SkolkaPerinka.Client.Components
                 navigationManager.NavigateTo("signin");
             } else
             {
+                _parentEmail = user.FindFirst(c => c.Type == "sub")?.Value;
                 MonthString = GetMonthString(CurrentMonthonth.Month);
                 YearString = CurrentMonthonth.Year.ToString();
-                Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}");
+                Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}/{_parentEmail}");
 
                 language.InitLocalizedComponent(this);
                 StateHasChanged();
@@ -55,13 +57,25 @@ namespace SkolkaPerinka.Client.Components
 
         private void DateClick(DateTime date)
         {
-            var s = date;
+            DateTime toDay = DateTime.Today;
+            if (date == toDay)
+            {
+                var message = language["DnesNejdePrihlasit"];
+            }
+            else if(date < toDay)
+            {
+                var message = language["DnesNejdePrihlasit"];
+            }
+            else
+            {
+                navigationManager.NavigateTo($"signingchildrenstoschool/{date.ToShortDateString()}");
+            }
         }
 
         private async void CalendarBack()
         {
             CurrentMonthonth = CurrentMonthonth.AddMonths(-1);
-            Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}");
+            Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}/{_parentEmail}");
             MonthString = GetMonthString(CurrentMonthonth.Month);
             YearString = CurrentMonthonth.Year.ToString();
             StateHasChanged();
@@ -70,7 +84,7 @@ namespace SkolkaPerinka.Client.Components
         private async void CalendarNext()
         {
             CurrentMonthonth = CurrentMonthonth.AddMonths(1);
-            Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}");
+            Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}/{_parentEmail}");
             MonthString = GetMonthString(CurrentMonthonth.Month);
             YearString = CurrentMonthonth.Year.ToString();
             StateHasChanged();

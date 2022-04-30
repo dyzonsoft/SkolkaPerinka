@@ -1,20 +1,28 @@
-﻿@*@using Microsoft.AspNetCore.Authorization*@
-@inherits LayoutComponentBase
-@*@attribute [Authorize]*@
+﻿@inherits LayoutComponentBase
+
 
 <MudLayout>
     <MudAppBar Elevation="1" Color="Color.Info">
         <MudText Typo="Typo.h5" Class="ml-3">Peřinka</MudText>
         <MudSpacer />
-        <AuthorizeView>
+        <MudMenu Icon="@Icons.Filled.Person" IconColor="Color.Default" Size="Size.Large">
+            <AuthorizeView>
             <Authorized>
-                @context.User.Identity.Name
-                <MudButton OnClick="SignOut">Sign out</MudButton>
+                <MudText Class="border-b-2 mb-3 pa-3">@context.User.Identity.Name</MudText>
+                <MudMenuItem>
+                    <MudText>O nás</MudText>
+                </MudMenuItem>
+                <MudMenuItem>
+                    <MudText>Pravidla</MudText>
+                </MudMenuItem>
+                <MudMenuItem>
+                    <MudButton OnClick="SignOut" FullWidth="true">Sign out</MudButton>
+                </MudMenuItem>
             </Authorized>
         </AuthorizeView>
+        </MudMenu>
         <LanguageSwitcher />
         <ThemeSwitcher />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
     </MudAppBar>
     <MudSpacer />
     <MudMainContent>

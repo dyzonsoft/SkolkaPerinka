@@ -35,5 +35,10 @@ namespace SkolkaPerinka.Client.Pages
                 navigationManager.NavigateTo("appsite");
             }
         }
+
+        private async Task RegisterUser()
+        {
+            navigationManager.NavigateTo("register");
+        }
     }
 }
