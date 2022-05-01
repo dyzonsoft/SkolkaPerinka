@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using AKSoftware.Localization.MultiLanguages.Blazor;
+using SkolkaPerinka.Client.Components;
 
 namespace SkolkaPerinka.Client.Pages
 {
@@ -7,6 +8,8 @@ namespace SkolkaPerinka.Client.Pages
     {
         [CascadingParameter] protected Task<AuthenticationState> authenticationState { get; set; }
         private string parentEmail { get; set; }
+
+        Calendar calendar;
 
         protected override async Task OnInitializedAsync()
         {
@@ -18,6 +21,17 @@ namespace SkolkaPerinka.Client.Pages
         private async Task CreateChildren()
         {
             navigationManager.NavigateTo("createchildren");
+        }
+
+        private async Task Administration()
+        {
+            navigationManager.NavigateTo("administration");
+        }
+        
+        private async Task ChildrenWasDeleted(string message)
+        {
+            await calendar.RefreshCalendar();
+            StateHasChanged();
         }
     }
 }

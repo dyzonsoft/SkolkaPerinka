@@ -19,6 +19,10 @@ patek: Pátek
 sobota: Sobota
 nedele: Neděle
 
+Childrens: Děti
+Parents: Rodiče
+Teachers: Učitelé
+
 IndexText1: Systém docházky pro školku Peřinka
 Registrace: Registrace
 Registrovat: Registrovat
@@ -39,6 +43,9 @@ Prihlaseni: Přihlášení
 Prihlasit: Přihlásit
 Prihlasen: Přihlášen
 UserFalse: jméno, nebo heslo není správně.
+UserDalete: uživatel byl smazán.
+
+Delete: Odstranit
 
 VaseDeti: Vaše děti
 RegistrovatDite: Registrovat dítě
@@ -55,3 +62,5 @@ Hotovo: Hotovo
 AccessFalse: zatím Vám nebyl povolen přístup, kontaktujte ředitele školky.
 
 SoNeCannotVariantWeek: v sobotu a neděli nemůžete přihlásit dítě s výběrem -do konce týdne-. Prosím vyberte -na jeden den-
+Administration: Administrace
+SamthingWrong: něco se nepovedlo

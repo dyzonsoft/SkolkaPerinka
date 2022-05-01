@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿//using AKSoftware.Localization.MultiLanguages;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SkolkaPerinka.Server.Data;
 using SkolkaPerinka.Shared.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace SkolkaPerinka.Server.Controllers
 {
@@ -17,12 +19,23 @@ namespace SkolkaPerinka.Server.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly AppDBContext _context;
+        //private readonly LanguageContainer _language;
 
-        public UserController(SignInManager<User> signInManager, UserManager<User> userManager, IConfiguration configuration)
+        public UserController(SignInManager<User> signInManager, UserManager<User> userManager, IConfiguration configuration, AppDBContext context/*, LanguageContainer language*/)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
+            _context = context;
+            //_language = language;
+        }
+
+        [HttpGet("getallusers")]
+        public async Task<List<User>> GetAllUsers()
+        {
+            List<User> users = await _context.Users.ToListAsync();
+            return users;
         }
 
         [AllowAnonymous]
@@ -41,6 +54,7 @@ namespace SkolkaPerinka.Server.Controllers
                 Address = user.Email,
                 Phone = user.Phone,
                 PasswordHash = password,
+                Role = role
 
             };
 
@@ -73,7 +87,7 @@ namespace SkolkaPerinka.Server.Controllers
             string username = user.Email;
             string password = user.Password;
 
-            SignInResult signInResult = await _signInManager.PasswordSignInAsync(username, password, false, false);
+            var signInResult = await _signInManager.PasswordSignInAsync(username, password, false, false);
             if (signInResult.Succeeded == true)
             {
                 User identityUser = await _userManager.FindByNameAsync(username);
@@ -82,15 +96,10 @@ namespace SkolkaPerinka.Server.Controllers
                     string JSONWebTokenAsString = await GenerateJSONWebToken(identityUser);
                     return Ok(JSONWebTokenAsString);
                 }
-                else
-                {
-                    return Unauthorized("NotAccess");
-                }
+                else return Unauthorized("NotAccess"); 
             }
-            else
-            {
-                return Unauthorized(user);
-            }
+            //else return Unauthorized(_language["SamthingWrong"]); 
+            else return Unauthorized("SamthingWrong"); 
         }
 
         [NonAction]
@@ -123,6 +132,27 @@ namespace SkolkaPerinka.Server.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+        }
+
+        [Route("delete")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(User user)
+        {
+            var result = await _userManager.DeleteAsync(user);
+
+            if (result.Succeeded)  return Ok("UserDalete"); 
+            else return Unauthorized("SamthingWrong");
+        }
+
+        [HttpPut("updateaccess/{userId}")]
+        public async Task<IActionResult> Update(string userId, User user)
+        {
+            var userFromDb = await _userManager.FindByIdAsync(userId);
+            userFromDb.Access = user.Access;
+            var result = await _userManager.UpdateAsync(userFromDb);
+
+            if (result.Succeeded) return Ok("UserUpdate");
+            else return Unauthorized("SamthingWrong");
         }
     }
 }

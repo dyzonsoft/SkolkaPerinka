@@ -1,0 +1,113 @@
+﻿@page "/administration"
+@inject ILanguageContainerService language
+@inject NavigationManager navigationManager
+@inject ISnackbar snackbar
+
+<h3>Administration</h3>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudGrid Class="mt-5 pa-3">
+        <MudItem xs="12" lg="9">
+            <MudPaper Width="100%" Height="100%">
+                <MudGrid>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudCard Elevation="25" Class="rounded-lg pb-4">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h5" Align="Align.Center">@language["Teachers"]</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudList Class="mx-auto mt-4" Clickable="true">
+                                    @if (_teachers == null)
+                                    {
+                                        <MudSkeleton />
+                                        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
+                                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />         
+                                    }
+                                    else
+                                    {
+                                        foreach (var teacher in _teachers)
+                                        {
+                                            <UserConponent user="@teacher" OnDeleteUser="DeleteUser" OnChangeAsyncUser="ChangeAccessUser"/>
+                                        }
+                                    }
+                                </MudList>
+                            </MudCardContent>
+                            <MudCardActions Class="d-flex justify-center">
+                                @*<MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Start Now</MudButton>*@
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudCard Elevation="25" Class="rounded-lg pb-4">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h5" Align="Align.Center">@language["Parents"]</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudList Class="mx-auto mt-4" Clickable="true">
+                                    @if (_parents == null)
+                                    {
+                                        <MudSkeleton />
+                                        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
+                                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />         
+                                    }
+                                    else
+                                    {
+                                        foreach (var parent in _parents)
+                                        {
+                                            <UserConponent user="@parent" OnDeleteUser="DeleteUser" OnChangeAsyncUser="ChangeAccessUser"/>
+                                        }
+                                    }
+                                </MudList>
+                            </MudCardContent>
+                            <MudCardActions Class="d-flex justify-center">
+                                @*<MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Start Now</MudButton>*@
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudCard Elevation="25" Class="rounded-lg pb-4">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h5" Align="Align.Center">@language["Childrens"]</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent Class="pl-0 pr-0">
+                                <MudList Class="mx-auto mt-4" Style="width:300px;" Clickable="true">
+                                    @if (_childrens == null)
+                                    {
+                                        <MudSkeleton />
+                                        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
+                                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />         
+                                    }
+                                    else
+                                    {
+                                        foreach (var children in _childrens)
+                                        {
+                                            MudBlazor.Color genderColor = Color.Info;
+                                            if (children.Gender == "Girl") genderColor = Color.Secondary;
+                                            <ChildrenComponent children="@children" genderColor="@genderColor" OnDeleteChildern="DeleteChildren" />
+                                        }
+                                    }
+                                </MudList>
+                            </MudCardContent>
+                            <MudCardActions Class="d-flex justify-center">
+                                @*<MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Start Now</MudButton>*@
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" lg="3">
+            <MudPaper Width="100%" Height="100%" Class="pa-4 calendar">
+                @*<Calendar/>*@
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+

@@ -20,6 +20,21 @@ namespace SkolkaPerinka.Server.Controllers
             _context = context;
         }
 
+        [HttpGet("getallchildrens")]
+        public async Task<List<Children>> GetAllChildrens()
+        {
+            List<Children> childrens = await _context.Childrens.ToListAsync();
+            return childrens;
+        }
+
+        [HttpGet("getchildrenbyid/{id}")]
+        public async Task<Children> GetChildrenById(int id)
+        {
+            Children children = new(); 
+            children = await _context.Childrens.SingleOrDefaultAsync(ch => ch.Id == id);
+            return children;
+        }
+
         [HttpGet("getchildrensforparent/{parentEmail}/{selectedDate}")]
         public async Task<List<Children>> GetChildrensForParent(string parentEmail, string selectedDate)
         {
@@ -45,6 +60,7 @@ namespace SkolkaPerinka.Server.Controllers
             return childrens;
         }
 
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] ChildrenToRegister childrenToRegister)
         {
@@ -59,18 +75,22 @@ namespace SkolkaPerinka.Server.Controllers
             };
          
             _context.Childrens.Add(children);
-            var result = await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return Ok(children);
         }
 
         [HttpPost]
-        [Route("delete")]
-        public async Task<IActionResult> Delete(Children children)
+        [Route("deletechild")]
+        public async Task<IActionResult> DeleteChild(Children children)
         {
             var test = await _context.Childrens.Where(f => f.Id == children.Id).FirstOrDefaultAsync();
             if (test != null)
             {
+                List<Children> childrens = new();
+                childrens.Add(test);
+                await DeleteChildernsFromSchoolToFuture(DateTime.Today, childrens);
+
                 _context.Childrens.Remove(test);
                 await _context.SaveChangesAsync();
                 return Ok(children);
@@ -78,6 +98,66 @@ namespace SkolkaPerinka.Server.Controllers
             else
             {
                 return BadRequest(children);
+            }
+        }
+
+        [HttpPost]
+        [Route("deleteallchildofparent")]
+        public async Task<IActionResult> DeleteAllChildOfParent(User user)
+        {
+            List<Children> childrens = new();
+            childrens = await _context.Childrens.Where(f => f.ParentEmail == user.Email).ToListAsync();
+            if (childrens != null)
+            {
+                foreach(var child in childrens)
+                {
+                    await DeleteChildernsFromSchoolToFuture(DateTime.Today, childrens);
+                    _context.Childrens.Remove(child);
+                }
+
+                await _context.SaveChangesAsync();
+                return Ok(user.Email);
+            }
+            else
+            {
+                return BadRequest(user.Email);
+            }
+        }
+
+        private async Task<IActionResult> DeleteChildernsFromSchoolToFuture(DateTime currentDay, List<Children> childrenOfParent)
+        {
+            List<Day> days = await _context.Days.Where((d) => d.Date >= currentDay).ToListAsync();
+
+            if (days != null)
+            { 
+                foreach (var day in days)
+                {
+                    var childrenInScoolAtDay = day.IdChildrensInSchool;
+                    var f = childrenInScoolAtDay.Split("|");
+
+                    foreach (var child in childrenOfParent)
+                    {
+                        string childId = child.Id.ToString();
+                        bool childIdeIsExists = f.Any(x => f.Contains(childId));
+
+                        if (childIdeIsExists)
+                        {
+                            int startId = day.IdChildrensInSchool.IndexOf("|" + childId + "|");
+                            day.IdChildrensInSchool = day.IdChildrensInSchool.Remove(startId + 1, childId.Length + 1);
+                            if (day.NumberOfChild == 0) day.NumberOfChild = 0;
+                            else day.NumberOfChild -= 1;
+                            
+                            _context.Days.Update(day);
+                        }
+
+                    }
+                }
+                await _context.SaveChangesAsync();
+                return Ok("hotovo");
+            }
+            else
+            {
+                return Ok("zadnej den");
             }
         }
     }

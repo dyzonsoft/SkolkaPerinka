@@ -33,7 +33,7 @@ namespace SkolkaPerinka.Client.Components
                 Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}/{_parentEmail}");
 
                 language.InitLocalizedComponent(this);
-                StateHasChanged();
+                //StateHasChanged();
             }
         }
 
@@ -87,6 +87,12 @@ namespace SkolkaPerinka.Client.Components
             Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}/{_parentEmail}");
             MonthString = GetMonthString(CurrentMonthonth.Month);
             YearString = CurrentMonthonth.Year.ToString();
+            StateHasChanged();
+        }
+
+        public async Task RefreshCalendar()
+        {
+            Days = await HttpClient.GetFromJsonAsync<Day[]>($"/api/calendar/getalldays/{CurrentMonthonth.Month}/{CurrentMonthonth.Year}/{_parentEmail}");
             StateHasChanged();
         }
     }

@@ -1,3 +1,4 @@
+using AKSoftware.Localization.MultiLanguages;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -5,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SkolkaPerinka.Server.Data;
 using SkolkaPerinka.Shared.Models;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +41,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
+
+builder.Services.AddLanguageContainer(Assembly.GetExecutingAssembly());
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 

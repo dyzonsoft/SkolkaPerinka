@@ -17,7 +17,7 @@
                         <MudCardContent>
                             <MudTextField Label="@language["Email"]" Class="mt-3"
                                           @bind-Value="_userToSignIn.Email" For="@(() => _userToSignIn.Email)"/>
-                            <MudTextField Label="@language["Heslo"]" HelperText="@language["HesloHelp"]" Class="mt-3"
+                            <MudTextField Label="@language["Heslo"]" Class="mt-3"
                                           @bind-Value="_userToSignIn.Password" For="@(() => _userToSignIn.Password)" InputType="InputType.Password"/>
                         </MudCardContent>
                         <MudPaper>

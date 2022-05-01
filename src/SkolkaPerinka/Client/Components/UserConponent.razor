@@ -1,0 +1,45 @@
+﻿@inject ILanguageContainerService language
+
+
+<MudListItem>
+    <span>@user.FirstName   @user.LastName</span>
+    <div class="float-end">
+
+        @*<MudToggleIconButton @bind-Toggled="@user.Access"
+                     Icon="@Icons.Filled.SensorDoor" Color="@Color.Error"
+                     ToggledIcon="@Icons.Outlined.SensorDoor" ToggledColor="@Color.Success"/>*@
+
+        @if (user.Access)
+        {
+            <MudIconButton Icon="@Icons.Outlined.SensorDoor" Size="Size.Medium" Class="justify-end" Color="Color.Success" aria-label="delete" 
+                @onclick="() => ChangeAccessUser(user.Id)">
+            </MudIconButton>
+        }
+        else
+        {
+            <MudIconButton Icon="@Icons.Filled.SensorDoor" Size="Size.Medium" Class="justify-end" Color="Color.Error" aria-label="delete" 
+                @onclick="() => ChangeAccessUser(user.Id)">
+            </MudIconButton>
+        }
+        <MudIconButton Icon="@Icons.Rounded.DeleteForever" Size="Size.Medium" Class="justify-end" Color="Color.Error" aria-label="delete" 
+            @onclick="() => DeleteUser(user.Id)">
+        </MudIconButton>
+    </div>
+</MudListItem>
+
+@code {
+    [Parameter] public User user { get; set; }
+    [Parameter] public MudBlazor.Color genderColor { get; set; }
+    [Parameter] public EventCallback<string> OnDeleteUser { get; set; }
+    [Parameter] public EventCallback<string> OnChangeAsyncUser { get; set; }
+
+    private async Task DeleteUser(string userId)
+    {
+        await OnDeleteUser.InvokeAsync(userId);
+    }
+
+    private async Task ChangeAccessUser(string userId)
+    {
+        await OnChangeAsyncUser.InvokeAsync(userId);
+    }
+}

@@ -10,7 +10,7 @@ using SkolkaPerinka.Server.Data;
 
 namespace SkolkaPerinka.Server.Data.Migrations
 {
-    [DbContext(typeof(AppDBContext))]
+    [DbContext(typeof(DbContext))]
     [Migration("20220418160754_Children")]
     partial class Children
     {

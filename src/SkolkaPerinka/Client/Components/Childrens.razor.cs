@@ -13,6 +13,7 @@ namespace SkolkaPerinka.Client.Components
         [Parameter] public string _parentEmail { get; set; }
         [Parameter] public EventCallback<List<Children>> OnSetChildrensToParentComponent { get; set; }
         [Parameter] public EventCallback<Children> OnSetChildrensCheckBoxToParentComponent { get; set; }
+        [Parameter] public EventCallback<string> OnDeleteChildrenToParentComponent { get; set; }
 
         private List<Children> childrens = new List<Children>();
 
@@ -34,11 +35,12 @@ namespace SkolkaPerinka.Client.Components
         private async Task DeleteChildren(int childrenId)
         {
             Children children = childrens.FirstOrDefault(c => c.Id == childrenId);
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"/api/childrens/delete", children);
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"/api/childrens/deletechild", children);
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-                childrens = await httpClient.GetFromJsonAsync<List<Children>>($"/api/childrens/getchildrensforparent/{_parentEmail}");
-                StateHasChanged();
+                childrens = await httpClient.GetFromJsonAsync<List<Children>>($"/api/childrens/getchildrensforparent/{_parentEmail}/{_selectedDate}");
+                OnDeleteChildrenToParentComponent.InvokeAsync("");
+                //StateHasChanged();
             }
             else
             {

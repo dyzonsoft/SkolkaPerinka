@@ -1,0 +1,45 @@
+﻿@inject ILanguageContainerService language
+@inject IDialogService DialogService
+@inject IJSRuntime jsRuntime
+@inject HttpClient httpClient
+@inject ISnackbar snackbar
+
+
+<MudListItem IconColor="@genderColor" IconSize="Size.Medium" Icon="@Icons.Filled.ChildCare">
+    <MudText>@children.FirstName   @children.LastName</MudText>
+    <MudIconButton Class="children-item-delete" Icon="@Icons.Rounded.DeleteForever" Size="Size.Medium" Color="Color.Error" aria-label="delete" 
+        @onclick="() => DeleteChildren(children.Id)">
+    </MudIconButton>
+</MudListItem>
+
+@code {
+    [Parameter] public Children children { get; set; }
+    [Parameter] public MudBlazor.Color genderColor { get; set; }
+    [Parameter] public EventCallback<int> OnDeleteChildern { get; set; }
+
+    private async Task DeleteChildren(int childrenId)
+    {
+        Children children = await httpClient.GetFromJsonAsync<Children>($"/api/childrens/getchildrenbyid/{childrenId}");
+        if (children != null)
+        {
+            var parameters = new DialogParameters();
+            parameters.Add("_childrenName", "Kája");
+            parameters.Add("_userName", "userJája");
+            parameters.Add("_delete", "children");
+
+            var options = new DialogOptions() { CloseButton = true };
+
+            var dialog = DialogService.Show<MudDialogComponent>("Delete children", parameters);
+            var result = await dialog.Result;
+
+            if (!result.Cancelled)
+            {
+                await OnDeleteChildern.InvokeAsync(childrenId);
+            }
+        }
+        else
+        {
+            snackbar.Add(language["SamthingWrong"], Severity.Error);
+        }
+    }
+}
