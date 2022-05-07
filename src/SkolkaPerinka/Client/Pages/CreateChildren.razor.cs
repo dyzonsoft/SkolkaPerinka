@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using AKSoftware.Localization.MultiLanguages.Blazor;
 using global::SkolkaPerinka.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace SkolkaPerinka.Client.Pages
 {
@@ -38,6 +39,11 @@ namespace SkolkaPerinka.Client.Pages
                 serverErrorMessage = await httpResponseMessage.Content.ReadFromJsonAsync<List<string>>();
                 success = false;
             }
+        }
+
+        private void GoBack()
+        {
+            _jsRuntime.InvokeVoidAsync("history.go", -1);
         }
     }
 }

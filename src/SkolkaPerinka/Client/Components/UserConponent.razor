@@ -11,13 +11,13 @@
 
         @if (user.Access)
         {
-            <MudIconButton Icon="@Icons.Outlined.SensorDoor" Size="Size.Medium" Class="justify-end" Color="Color.Success" aria-label="delete" 
+            <MudIconButton Icon="@Icons.Filled.Check" Size="Size.Medium" Class="justify-end" Color="Color.Success" aria-label="delete" 
                 @onclick="() => ChangeAccessUser(user.Id)">
             </MudIconButton>
         }
         else
         {
-            <MudIconButton Icon="@Icons.Filled.SensorDoor" Size="Size.Medium" Class="justify-end" Color="Color.Error" aria-label="delete" 
+            <MudIconButton Icon="@Icons.Filled.Clear" Size="Size.Medium" Class="justify-end" Color="Color.Error" aria-label="delete" 
                 @onclick="() => ChangeAccessUser(user.Id)">
             </MudIconButton>
         }

@@ -5,16 +5,24 @@
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 @inject ISnackbar snackbar
+@inject IJSRuntime _jsRuntime
 
 <PageTitle>Registration of the child in kindergarten on the date</PageTitle>
-<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+<MudContainer  Class="mud-appbar mud-theme-info header" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudStack Row="true">
+        <MudIconButton Class="back" Size="Size.Large" Icon="@Icons.Filled.KeyboardBackspace" aria-label="@language["Back"]" @onclick="@GoBack"></MudIconButton>
+        <MudText Typo="Typo.h4" Class="pt-4 m-auto" Color="Color.Default">@language["PrihlaseniDetiDoSkolky"]</MudText>
+    </MudStack>
+    <MudPaper Elevation="0" Class="oblouk"></MudPaper>
+</MudContainer>
+<MudContainer MaxWidth="MaxWidth.Small" Class="pa-4">
  
-    <MudText Typo="Typo.h5">@language["PrihlaseniDetiDoSkolky"]</MudText>
-    <MudText Typo="Typo.h4" Color="Color.Info">@SelectedDate</MudText>
+    @*<MudText Typo="Typo.h5">@language["PrihlaseniDetiDoSkolky"]</MudText>*@
+    <MudText Typo="Typo.h4" Class="pb-2 text-center" Color="Color.Info">@SelectedDate</MudText>
     <EditForm Model="_childrenToSchool" OnValidSubmit="SignedChildren">
     <DataAnnotationsValidator/>
     <MudGrid>
-        <MudItem xs="12" sm="7">
+        <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
                     <MudRadioGroup @bind-SelectedOption="_childrenToSchool.Variant">

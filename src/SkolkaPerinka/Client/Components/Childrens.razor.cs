@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 using global::SkolkaPerinka.Shared.Models;
 using AKSoftware.Localization.MultiLanguages.Blazor;
+using MudBlazor;
 
 namespace SkolkaPerinka.Client.Components
 {
@@ -35,16 +36,32 @@ namespace SkolkaPerinka.Client.Components
         private async Task DeleteChildren(int childrenId)
         {
             Children children = childrens.FirstOrDefault(c => c.Id == childrenId);
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"/api/childrens/deletechild", children);
-            if (httpResponseMessage.IsSuccessStatusCode)
+            User user = await httpClient.GetFromJsonAsync<User>($"/api/user/getusersbyemail/{children.ParentEmail}");
+            var parameters = new DialogParameters();
+            parameters.Add("_childrenName", children.FirstName + " " + children.LastName);
+            parameters.Add("_userName", "");
+            parameters.Add("_parentText", "");
+            parameters.Add("_warning", language["ChildrenDeleteWarning"]);
+            parameters.Add("_delete", "children");
+
+            var options = new DialogOptions() { CloseButton = true };
+
+            var dialog = DialogService.Show<MudDialogDeleteChildren>("Delete children", parameters);
+            var result = await dialog.Result;
+
+            if (!result.Cancelled)
             {
-                childrens = await httpClient.GetFromJsonAsync<List<Children>>($"/api/childrens/getchildrensforparent/{_parentEmail}/{_selectedDate}");
-                OnDeleteChildrenToParentComponent.InvokeAsync("");
-                //StateHasChanged();
-            }
-            else
-            {
-                Console.WriteLine(httpResponseMessage.Content);
+                HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"/api/childrens/deletechild", children);
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    childrens = await httpClient.GetFromJsonAsync<List<Children>>($"/api/childrens/getchildrensforparent/{_parentEmail}/{_selectedDate}");
+                    OnDeleteChildrenToParentComponent.InvokeAsync("");
+                    //StateHasChanged();
+                }
+                else
+                {
+                    Console.WriteLine(httpResponseMessage.Content);
+                }
             }
         }
     }

@@ -2,7 +2,8 @@
 
 
 <MudLayout>
-    <MudAppBar Elevation="1" Color="Color.Info">
+    <MudAppBar Elevation="0" Color="Color.Info">
+        <MudIconButton Icon="@Icons.Filled.School" Color="Color.Secondary" Size="Size.Large"></MudIconButton>
         <MudText Typo="Typo.h5" Class="ml-3">Peřinka</MudText>
         <MudSpacer />
         <MudMenu Icon="@Icons.Filled.Person" IconColor="Color.Default" Size="Size.Large">
@@ -10,13 +11,13 @@
             <Authorized>
                 <MudText Class="border-b-2 mb-3 pa-3">@context.User.Identity.Name</MudText>
                 <MudMenuItem>
-                    <MudText>O nás</MudText>
+                    <MudText>@language["ONas"]</MudText>
                 </MudMenuItem>
                 <MudMenuItem>
-                    <MudText>Pravidla</MudText>
+                    <MudText>@language["Pravidla"]</MudText>
                 </MudMenuItem>
                 <MudMenuItem>
-                    <MudButton OnClick="SignOut" FullWidth="true">Sign out</MudButton>
+                    <MudButton OnClick="SignOut" FullWidth="true">@language["Odhlasit"]</MudButton>
                 </MudMenuItem>
             </Authorized>
         </AuthorizeView>

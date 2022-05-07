@@ -1,11 +1,19 @@
 ﻿@page "/register"
 @inject NavigationManager navigationManager
 @inject ILanguageContainerService language
+@inject IJSRuntime _jsRuntime
 
 <PageTitle>Register</PageTitle>
+<MudContainer  Class="mud-appbar mud-theme-info header" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudStack Row="true">
+        <MudIconButton Class="back" Size="Size.Large" Icon="@Icons.Filled.KeyboardBackspace" aria-label="@language["Back"]" @onclick="@GoBack"></MudIconButton>
+        <MudText Typo="Typo.h4" Class="pt-4 m-auto" Color="Color.Default">@language["Registrace"]</MudText>
+    </MudStack>
+    <MudPaper Elevation="0" Class="oblouk"></MudPaper>
+</MudContainer>
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
  
-    <MudText Typo="Typo.h4">@language["Registrace"]</MudText>
+    @*<MudText Typo="Typo.h4">@language["Registrace"]</MudText>*@
     <EditForm Model="_userToRegister" OnValidSubmit="RegisterUser">
     <DataAnnotationsValidator/>
     <MudGrid>

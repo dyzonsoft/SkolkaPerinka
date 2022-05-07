@@ -38,6 +38,13 @@ namespace SkolkaPerinka.Server.Controllers
             return users;
         }
 
+        [HttpGet("getusersbyemail/{email}")]
+        public async Task<User> GetUsersByEmail(string email)
+        {
+            User user = await _context.Users.Where((u) => u.Email == email).FirstOrDefaultAsync();
+            return user;
+        }
+
         [AllowAnonymous]
         [HttpPost("register/{role}")]
         public async Task<IActionResult> Register([FromBody] UserToRegister user, string role)

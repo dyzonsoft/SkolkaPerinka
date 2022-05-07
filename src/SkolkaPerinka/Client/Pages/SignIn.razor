@@ -7,8 +7,9 @@
 @inject ISnackbar Snackbar
 
 <PageTitle>Sign in</PageTitle>
+
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-    <MudText Typo="Typo.h4">@language["Prihlaseni"]</MudText>
+    @*<MudText Typo="Typo.h4">@language["Prihlaseni"]</MudText>*@
     <EditForm Model="_userToSignIn" OnValidSubmit="signInUser">
             <DataAnnotationsValidator/>
             <MudGrid>
@@ -22,7 +23,7 @@
                         </MudCardContent>
                         <MudPaper>
                             <MudPaper Elevation="0" Width="100%" Class="text-center">
-                                <MudFab ButtonType="ButtonType.Submit" Color="Color.Info" Class="muj-button" Label="@language["Prihlasit"]"></MudFab>
+                                <MudFab StartIcon="@Icons.Filled.FollowTheSigns" ButtonType="ButtonType.Submit" Color="Color.Info" Class="muj-button" Label="@language["Prihlasit"]"></MudFab>
                             </MudPaper>
                             <div class="flex">
                                 <MudText Class="or-line"></MudText>
@@ -30,7 +31,7 @@
                                 <MudText Class="or-line"></MudText>
                             </div>
                             <MudPaper Elevation="0" Width="100%" Class="text-center">
-                                <MudFab StartIcon="@Icons.Filled.PersonAdd" Color="Color.Default" Class="muj-button" Label="@language["Register"]" @onclick="RegisterUser"></MudFab>
+                                <MudFab StartIcon="@Icons.Filled.PersonAdd" Color="Color.Default" Class="muj-button" Label="@language["Registrovat"]" @onclick="RegisterUser"></MudFab>
                             </MudPaper>
                             <br />
                         </MudPaper>

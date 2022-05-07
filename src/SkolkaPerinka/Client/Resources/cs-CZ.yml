@@ -21,9 +21,10 @@ nedele: Neděle
 
 Childrens: Děti
 Parents: Rodiče
+Parent: Rodič
 Teachers: Učitelé
 
-IndexText1: Systém docházky pro školku Peřinka
+IndexText1: Systém docházky
 Registrace: Registrace
 Registrovat: Registrovat
 KrestniJmeno: Křestní jméno
@@ -44,6 +45,10 @@ Prihlasit: Přihlásit
 Prihlasen: Přihlášen
 UserFalse: jméno, nebo heslo není správně.
 UserDalete: uživatel byl smazán.
+Odhlasit: Odhlásit
+ONas: O nás
+Pravidla: Pravidla
+Back: Zpět
 
 Delete: Odstranit
 
@@ -64,3 +69,9 @@ AccessFalse: zatím Vám nebyl povolen přístup, kontaktujte ředitele školky.
 SoNeCannotVariantWeek: v sobotu a neděli nemůžete přihlásit dítě s výběrem -do konce týdne-. Prosím vyberte -na jeden den-
 Administration: Administrace
 SamthingWrong: něco se nepovedlo
+PoslatZpravu: Poslat zprávu
+PridatUcitele: Přidat učitele
+PridatRodice: Přidat 
+UserDeleteWarning: uživatel bude odstraněn z databáze včetně jeho dětí.
+ChildrenDeleteWarning: dítě bude odstraněno z databáze včetně záznamů v kalendáři počínaje zítřejším dnem.
+DialogFirstText: Opravdu chete smazat

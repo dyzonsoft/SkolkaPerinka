@@ -3,6 +3,7 @@ using global::SkolkaPerinka.Shared.Models;
 using AKSoftware.Localization.MultiLanguages.Blazor;
 using System.Net.Http.Json;
 using MudBlazor;
+using Microsoft.JSInterop;
 
 namespace SkolkaPerinka.Client.Pages
 {
@@ -44,6 +45,11 @@ namespace SkolkaPerinka.Client.Pages
         {
             Children currentChildren = _childrenToSchool.ChildrenOfParent.FirstOrDefault(ch => ch.Id == checkedChildren.Id);
             currentChildren.Checked = checkedChildren.Checked; 
+        }
+
+        private void GoBack()
+        {
+            _jsRuntime.InvokeVoidAsync("history.go", -1);
         }
     }
 }

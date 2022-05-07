@@ -60,6 +60,13 @@ namespace SkolkaPerinka.Server.Controllers
             return childrens;
         }
 
+        [HttpGet("getparentchildrens/{parentEmail}")]
+        public async Task<List<Children>> GetParentChildren(string parentEmail)
+        {
+            List<Children> childrens = await _context.Childrens.Where(ch => ch.ParentEmail == parentEmail).ToListAsync();
+            return childrens;
+        }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] ChildrenToRegister childrenToRegister)

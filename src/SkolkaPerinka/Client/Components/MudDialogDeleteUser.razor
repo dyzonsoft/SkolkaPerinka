@@ -1,0 +1,48 @@
+﻿@inject ISnackbar snackbar
+@inject ILanguageContainerService language
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Class="float-end">
+            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" Size="Size.Large" Class="mr-3 mb-n1"/>
+            @*@language["Delete"]*@
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (_delete == "user")
+        {
+                <MudText>@language["DialogFirstText"]</MudText>
+                <MudText Class="text-center" Typo="Typo.h6" Color="Color.Info">@_userName</MudText>
+            
+                <MudText Class="border-top">@language["Childrens"]: </MudText>
+                @foreach (var child in _childrens)
+               {
+                    <MudText Class="text-center" Typo="Typo.h6" Color="Color.Info">@child.FirstName  @child.LastName</MudText>   
+               }
+                
+                <MudText Class="border-top pt-2" Typo="Typo.caption" Color="Color.Primary"> * @_warning</MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="DeleteChildren">@language["Delete"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public List<Children> _childrens { get; set; }
+    [Parameter] public string _userName { get; set; }
+    [Parameter] public string _warning { get; set; }
+    [Parameter] public string _delete { get; set; }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void DeleteChildren()
+    {
+        MudDialog.Close(DialogResult.Ok(_userName));
+    }
+}
