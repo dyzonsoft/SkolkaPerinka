@@ -46,7 +46,7 @@ namespace SkolkaPerinka.Client.Components
 
             var options = new DialogOptions() { CloseButton = true };
 
-            var dialog = DialogService.Show<MudDialogDeleteChildren>("Delete children", parameters);
+            var dialog = dialogService.Show<MudDialogDeleteChildren>("Delete children", parameters);
             var result = await dialog.Result;
 
             if (!result.Cancelled)
@@ -63,6 +63,11 @@ namespace SkolkaPerinka.Client.Components
                     Console.WriteLine(httpResponseMessage.Content);
                 }
             }
+        }
+
+        private void ChildrenClick(int childrenId)
+        {
+            navigationManager.NavigateTo($"displaychild/{childrenId}");
         }
     }
 }

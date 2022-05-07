@@ -16,8 +16,8 @@
                 <MudMenuItem>
                     <MudText>@language["Pravidla"]</MudText>
                 </MudMenuItem>
-                <MudMenuItem>
-                    <MudButton OnClick="SignOut" FullWidth="true">@language["Odhlasit"]</MudButton>
+                <MudMenuItem OnClick="SignOut">
+                    <MudText><MudIcon Icon="@Icons.Filled.Logout"></MudIcon>@language["Odhlasit"]</MudText>
                 </MudMenuItem>
             </Authorized>
         </AuthorizeView>

@@ -1,6 +1,7 @@
 ﻿@inject ILanguageContainerService language
-@inject IDialogService DialogService
+@inject IDialogService dialogService
 @inject HttpClient httpClient
+@inject NavigationManager navigationManager
 
 <MudPaper Width="100%">
     <MudList Clickable="true">
@@ -9,9 +10,7 @@
         </MudListSubheader>
         @if (childrens == null)
         {
-            <MudSkeleton />
-            <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />         
+            <MudProgressCircular Indeterminate="true"></MudProgressCircular>        
         }
         else
         {
@@ -19,7 +18,7 @@
             {
                 MudBlazor.Color genderColor = Color.Info;
                 if (children.Gender == "Girl") genderColor = Color.Secondary;
-                <MudListItem IconColor="@genderColor" IconSize="Size.Large" Icon="@Icons.Filled.ChildCare">
+                <MudListItem IconColor="@genderColor" IconSize="Size.Large" Icon="@Icons.Filled.ChildCare" @onclick="() => ChildrenClick(children.Id)">
                     <MudText>@children.FirstName   @children.LastName</MudText>
 
                     @if (_withCheckBox)

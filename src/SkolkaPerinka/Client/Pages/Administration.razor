@@ -30,9 +30,7 @@
                                     <MudList Class="mx-auto mt-4 list-max-height" Clickable="true">
                                         @if (_teachers == null)
                                         {
-                                            <MudSkeleton />
-                                            <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
-                                            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />         
+                                            <MudProgressCircular Indeterminate="true"></MudProgressCircular>          
                                         }
                                         else
                                         {
@@ -59,9 +57,7 @@
                                     <MudList Class="mx-auto mt-4 list-max-height" Clickable="true">
                                         @if (_parents == null)
                                         {
-                                            <MudSkeleton />
-                                            <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
-                                            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />         
+                                            <MudProgressCircular Indeterminate="true"></MudProgressCircular>         
                                         }
                                         else
                                         {
@@ -97,8 +93,6 @@
                                                 MudBlazor.Color genderColor = Color.Info;
                                                 if (children.Gender == "Girl") genderColor = Color.Secondary;
                                                 <ChildrenComponent children="@children" genderColor="@genderColor" OnDeleteChildern="DeleteChildren" />
-                                               @* <ChildrenComponent children="@children" genderColor="@genderColor" OnDeleteChildern="DeleteChildren" />
-                                                <ChildrenComponent children="@children" genderColor="@genderColor" OnDeleteChildern="DeleteChildren" />*@
                                             }
                                         }
                                     </MudList>

@@ -124,6 +124,12 @@ a, .btn-link {
     text-align: end;
 }
 
+.children-info-icon {
+    width: 85px;
+    height: 85px;
+    margin-bottom: 8px;
+}
+
 .oblouk {
     position: absolute;
     width: 100%;

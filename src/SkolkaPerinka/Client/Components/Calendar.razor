@@ -1,11 +1,9 @@
 ﻿@inject ILanguageContainerService language
 @inject NavigationManager navigationManager
 
-@if (Days == null)
+@if (Days.Length < 1)
 {
-    <MudSkeleton />
-    <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
-    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />
+    <MudProgressCircular Indeterminate="true"></MudProgressCircular>   
 }
 else
 {    

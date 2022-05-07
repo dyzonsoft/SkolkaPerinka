@@ -1,6 +1,7 @@
 ﻿@inject ILanguageContainerService language
+@inject NavigationManager navigationManager
 
-<MudListItem IconColor="@genderColor" IconSize="Size.Medium" Icon="@Icons.Filled.ChildCare">
+<MudListItem IconColor="@genderColor" IconSize="Size.Medium" Icon="@Icons.Filled.ChildCare" @onclick="() => ChildrenClick(children.Id)">
     <MudText>@children.FirstName   @children.LastName</MudText>
     <MudIconButton Class="children-item-delete" Icon="@Icons.Rounded.DeleteForever" Size="Size.Medium" Color="Color.Error" aria-label="delete" 
         @onclick="() => DeleteChildren(children.Id)">
@@ -15,5 +16,10 @@
     private async Task DeleteChildren(int childrenId)
     {
         await OnDeleteChildern.InvokeAsync(childrenId);
+    }
+
+    private void ChildrenClick(int childrenId)
+    {
+        navigationManager.NavigateTo($"displaychild/{childrenId}");
     }
 }

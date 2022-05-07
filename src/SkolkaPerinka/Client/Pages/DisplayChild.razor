@@ -1,0 +1,52 @@
+﻿@page "/displaychild/{id:int}"
+@inject ILanguageContainerService language
+@inject IJSRuntime _jsRuntime
+@inject HttpClient httpClient
+
+<PageTitle>Dítě info</PageTitle>
+<MudContainer  Class="mud-appbar mud-theme-info header" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudStack Row="true">
+        <MudIconButton Class="back" Size="Size.Large" Icon="@Icons.Filled.KeyboardBackspace" aria-label="@language["Back"]" @onclick="@GoBack"></MudIconButton>
+        <MudText Typo="Typo.h4" Class="pt-4 m-auto" Color="Color.Default">@children.FirstName  @children.LastName</MudText>
+    </MudStack>
+    <MudPaper Elevation="0" Class="oblouk"></MudPaper>
+</MudContainer>
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudPaper Elevation="3" Class="pa-4 ma-2">
+        <MudText><MudIcon Color="@_color" Icon="@Icons.Filled.ChildCare" Class="children-info-icon"></MudIcon></MudText>
+        <MudText Typo="Typo.caption" Class="pa-0 ma-0">@language["DatumNarozeni"]</MudText>
+        <MudText Typo="Typo.h6" Class="text-center">@children.BirthDate.ToShortDateString()</MudText>
+        <MudText Typo="Typo.caption" Class="pa-0 ma-0">@language["Adresa"]</MudText>
+        <MudText Typo="Typo.h6" Class="text-center">@children.Address</MudText>
+    </MudPaper>
+    <AuthorizeView Roles="Director, Teacher">
+        <MudPaper Elevation="3" Class="pa-4 ma-2">
+            <MudText Typo="Typo.caption" Class="pa-0 ma-0">@language["Parent"]</MudText>
+            <MudText Typo="Typo.h6" Class="text-center">@parent.FirstName @parent.LastName</MudText>
+            <MudText Typo="Typo.caption" Class="pa-0 ma-0">@language["Email"]</MudText>
+            <MudText Typo="Typo.h6" Class="text-center">@parent.Email</MudText>
+            <MudText Typo="Typo.caption" Class="pa-0 ma-0">@language["Telefon"]</MudText>
+            <MudText Typo="Typo.h6" Class="text-center">@parent.FirstName @parent.PhoneNumber</MudText>
+        </MudPaper>
+    </AuthorizeView>
+</MudContainer>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Children children = new();
+    private User parent = new();
+    private MudBlazor.Color _color { get; set; } = Color.Info;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        children = await httpClient.GetFromJsonAsync<Children>($"/api/childrens/getchildrenbyid/{Id}");
+        if (children.Gender == "Girl") _color = Color.Secondary;
+        parent = await httpClient.GetFromJsonAsync<User>($"/api/user/getusersbyemail/{children.ParentEmail}");
+    }
+
+    private void GoBack()
+    {
+        _jsRuntime.InvokeVoidAsync("history.go", -1);
+    }
+}

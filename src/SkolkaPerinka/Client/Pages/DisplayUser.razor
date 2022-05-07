@@ -1,0 +1,60 @@
+﻿@page "/displayuser/{email}"
+@inject ILanguageContainerService language
+@inject IJSRuntime _jsRuntime
+@inject HttpClient httpClient
+
+<PageTitle>User info</PageTitle>
+<MudContainer  Class="mud-appbar mud-theme-info header" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudStack Row="true">
+        <MudIconButton Class="back" Size="Size.Large" Icon="@Icons.Filled.KeyboardBackspace" aria-label="@language["Back"]" @onclick="@GoBack"></MudIconButton>
+        <MudText Typo="Typo.h4" Class="pt-4 m-auto" Color="Color.Default">@user.FirstName @user.LastName</MudText>
+    </MudStack>
+    <MudPaper Elevation="0" Class="oblouk"></MudPaper>
+</MudContainer>
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudPaper Elevation="3" Class="pa-4 ma-2">
+        <MudText Typo="Typo.caption" Class="pa-0 ma-0">@language["Adresa"]</MudText>
+        <MudText Typo="Typo.h6" Class="text-center">@user.Address</MudText>
+        <MudText Typo="Typo.caption" Class="pa-0 ma-0">@language["Email"]</MudText>
+        <MudText Typo="Typo.h6" Class="text-center">@user.Email</MudText>
+        <MudText Typo="Typo.caption" Class="pa-0 ma-0">@language["Telefon"]</MudText>
+        <MudText Typo="Typo.h6" Class="text-center">@user.Phone</MudText>
+    </MudPaper>
+    <MudPaper Elevation="3" Class="pa-4 ma-2">
+        <MudText Typo="Typo.caption" Class="pa-0 ma-0">@language["Childrens"]</MudText>
+        @if (childrens.Count < 1)
+        {
+            <MudProgressCircular Indeterminate="true"></MudProgressCircular>    
+        }
+        else
+        {
+            foreach (var child in childrens)
+            {
+                MudBlazor.Color _color = Color.Info;
+                if (child.Gender == "Girl") _color = Color.Secondary;
+                <MudText Typo="Typo.h6" Class="text-center">
+                    <MudIcon Color="@_color" Icon="@Icons.Filled.ChildCare" Size="Size.Large" Class="mr-4"></MudIcon>
+                    @child.FirstName @child.LastName
+                </MudText>
+            }
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter] public string email { get; set; }
+    public List<Children> childrens = new();
+    private User user = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await httpClient.GetFromJsonAsync<User>($"/api/user/getusersbyemail/{email}");
+        childrens = await httpClient.GetFromJsonAsync<List<Children>>($"/api/childrens/getparentchildrens/{user.Email}");
+    }
+
+    private void GoBack()
+    {
+        _jsRuntime.InvokeVoidAsync("history.go", -1);
+    }
+}

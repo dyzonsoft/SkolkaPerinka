@@ -4,7 +4,6 @@
 
 <MudContainer  Class="mud-appbar mud-theme-info header" MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudStack Row="true">
-        @*<MudIconButton Size="Size.Large" Color="Color.Default" Icon="@Icons.Filled.KeyboardBackspace" aria-label="@language["Back"]"></MudIconButton>*@
         <MudText Typo="Typo.h4" Class="pt-4 m-auto" Color="Color.Default">@DateTime.Today.ToShortDateString()</MudText>
     </MudStack>
     <MudPaper Elevation="0" Class="oblouk"></MudPaper>
@@ -15,16 +14,12 @@
             <MudPaper Width="100%" Height="100%">
                 <div class="p-2 app-button-end">
                     <AuthorizeView Roles="Director">
-                        @*<MudPaper Elevation="0" Width="100%" Class="text-start">*@
                             <MudFab StartIcon="@Icons.Filled.Newspaper" Color="Color.Info" Class="ma-2 app-button" Label="@language["Administration"]" @onclick="Administration"></MudFab>
-                        @*</MudPaper>*@
                     </AuthorizeView>
-                    @*<MudPaper Elevation="0" Width="100%" Class="text-end">*@
                         <MudFab StartIcon="@Icons.Filled.PersonAdd" Color="Color.Default" Class="ma-2 app-button" Label="@language["RegistrovatDite"]" @onclick="CreateChildren"></MudFab>
-                    @*</MudPaper>*@
                 </div>
                 <Childrens _selectedDate="@DateTime.Today.ToString()" _withCheckBox="false" _withDelete="true" _parentEmail="@parentEmail" 
-                                                                        OnDeleteChildrenToParentComponent="ChildrenWasDeleted" />
+                                          OnDeleteChildrenToParentComponent="ChildrenWasDeleted" />
             </MudPaper>
         </MudItem>
         <MudItem xs="12" lg="7">
